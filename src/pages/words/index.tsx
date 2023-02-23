@@ -1,5 +1,13 @@
+import Seo from "@/components/SEO";
+import WordsLayout from "@/components/wordsLayout";
+
 const Words = () => {
-  return <div>list of words of stranger</div>;
+  return (
+    <>
+      <Seo />
+      <WordsLayout />
+    </>
+  );
 };
 
 export default Words;
