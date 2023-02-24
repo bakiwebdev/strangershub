@@ -127,7 +127,7 @@ function Header() {
           </Popover>
           <Link href="/">
             <h3 className="text-md mr-2 font-semibold ml-3 text-cusblack">
-              Panda Steeze
+              Words Of Strangers
             </h3>
           </Link>
         </div>

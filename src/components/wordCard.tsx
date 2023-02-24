@@ -5,6 +5,7 @@ import {
   HeartIcon,
 } from "@heroicons/react/24/outline";
 import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/solid";
+import { motion } from "framer-motion";
 
 interface WordCardProps {
   heading: string;
@@ -24,7 +25,9 @@ const WordCard = ({
   color,
 }: WordCardProps) => {
   return (
-    <div
+    <motion.div
+      whileHover={{ scale: 1.2 }}
+      whileTap={{ scale: 1.1 }}
       style={{
         borderColor: `#${color}`,
       }}
@@ -53,7 +56,7 @@ const WordCard = ({
           style={{
             color: `#${color}`,
           }}
-          className="my-2 bg-slate-900/10 py-2 px-3 rounded-lg multi-line-truncation flex"
+          className="my-2 bg-slate-900/20 py-2 px-3 rounded-lg multi-line-truncation max-h-[130px]"
         >
           {body}
         </section>
@@ -91,7 +94,7 @@ const WordCard = ({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
