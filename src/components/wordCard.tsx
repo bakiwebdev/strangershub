@@ -1,17 +1,96 @@
-const WordCard = () => {
+import {
+  HandThumbDownIcon,
+  ChatBubbleOvalLeftEllipsisIcon,
+  ShareIcon,
+  HeartIcon,
+} from "@heroicons/react/24/outline";
+import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/solid";
+
+interface WordCardProps {
+  heading: string;
+  body: string;
+  likes: number;
+  dislikes: number;
+  comments?: number;
+  color: string;
+}
+
+const WordCard = ({
+  heading,
+  body,
+  likes,
+  dislikes,
+  comments = 0,
+  color,
+}: WordCardProps) => {
   return (
-    <div className="bg-gray-800 flex flex-col p-4 border rounded-md border-white ">
-      word card
-      {/* heading */}
-      <h3>This is heading</h3>
-      {/* body */}
-      <section>
-        "fashion is part of the daily air and it changes all the time, with all
-        the events. you can even see the approaching of a revolution in clothes.
-        you can see and feel everything in clothes." —diana vreeland
-      </section>
+    <div
+      style={{
+        borderColor: `#${color}`,
+      }}
+      className={`bg-gray-800 flex flex-col p-4 border rounded-md cursor-pointer`}
+    >
+      <div onClick={() => console.log("main card clicked")} className="flex-1">
+        {/* heading */}
+        <div className="flex flex-col gap-1">
+          {/* note title */}
+          <h3
+            style={{
+              color: `#${color}`,
+            }}
+            className="font-semibold text-ellipsis whitespace-nowrap overflow-hidden"
+          >
+            {heading}
+          </h3>
+          <div className="flex justify-center items-center gap-2 w-fit">
+            {/* actual data */}
+            <p className="text-xs text-gray-400">today - 12:00pm</p>
+            <GlobeEuropeAfricaIcon className="w-3 h-3 text-gray-200" />
+          </div>
+        </div>
+        {/* body */}
+        <section
+          style={{
+            color: `#${color}`,
+          }}
+          className="my-2 bg-slate-900/10 py-2 px-3 rounded-lg multi-line-truncation flex"
+        >
+          {body}
+        </section>
+      </div>
       {/* like, dislike, comment */}
-      <div className="flex justify-between"></div>
+      <div
+        onClick={() => console.log("reaction button clicked")}
+        className="flex justify-between mt-2 px-4 sm:px-3 md:px-2 z-10"
+      >
+        {/* heart icon */}
+        <div className="group flex gap-1 text-red-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
+          <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-red-500/10 transform transition-all ease-in-out duration-500">
+            <HeartIcon className="w-4 h-4" />
+          </div>
+          <p className="font-mono text-xs font-light">{likes}</p>
+        </div>
+        {/* thumbs down icon */}
+        <div className="group flex gap-1 text-orange-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
+          <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-orange-500/10 transform transition-all ease-in-out duration-500">
+            <HandThumbDownIcon className="w-4 h-4" />
+          </div>
+          <p className="font-mono text-xs font-light">{dislikes}</p>
+        </div>
+        {/* chat icon */}
+        <div className="group flex gap-1 text-blue-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
+          <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-blue-500/10 transform transition-all ease-in-out duration-500">
+            <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4" />
+          </div>
+          <p className="font-mono text-xs font-light">{comments}</p>
+        </div>
+        {/* share icon */}
+        <div className="group flex gap-1 text-green-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
+          <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-green-500/10 transform transition-all ease-in-out duration-500">
+            <ShareIcon className="w-4 h-4" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
