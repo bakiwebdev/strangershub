@@ -73,7 +73,7 @@ const WordCard = ({
       {/* like, dislike, comment */}
       <div
         onClick={() => console.log("reaction button clicked")}
-        className="flex justify-between mt-2 px-4 sm:px-3 md:px-2 z-10"
+        className="flex justify-between mt-2 px-4 sm:px-3 md:px-2"
       >
         {/* heart icon */}
         <div className="group flex gap-1 text-red-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">

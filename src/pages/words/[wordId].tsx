@@ -89,7 +89,7 @@ const Word = ({
       {/* Back icon */}
       <div
         onClick={goBackHandler}
-        className="flex gap-3 justify-center items-center w-fit float-left text-green-500 px-4 py-2 rounded-full bg-green-500/10 cursor-pointer hover:bg-green-500/20 transition translate"
+        className="flex gap-3 justify-center items-center w-fit float-left text-orange-500 px-4 py-2 rounded-full bg-orange-500/10 cursor-pointer hover:bg-orange-500/20 transition translate"
       >
         <ArrowLeftIcon className="w-5 h-5" />
         <p className="text-sm">Back</p>

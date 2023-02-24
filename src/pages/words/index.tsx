@@ -1,4 +1,5 @@
 import Seo from "@/components/SEO";
+import WordFilter from "@/components/WordFilter";
 import WordCard from "@/components/wordCard";
 import WordCardSkeleton from "@/components/wordCardSkeleton";
 import WordsLayout from "@/components/wordsLayout";
@@ -24,6 +25,7 @@ const Words = () => {
   return (
     <>
       <Seo />
+      <WordFilter />
       <WordsLayout>
         {loading && cardSkeleton}
         {strangerWords.map((strangerWord: any, idx: number) => {

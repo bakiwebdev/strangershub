@@ -1,22 +1,22 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 const defaultMeta = {
-  title: "Words Of Strangers",
-  siteName: "wordsofstrangers.bakiwebdev.com",
-  description: `Words of Strangers is an innovative website that provides a platform for people to express their thoughts and ideas anonymously. This website is a virtual space that allows individuals to share their experiences, opinions, and perspectives without the need for registration or login.
+  title: "Strangers Hub",
+  siteName: "strangershub.bakiwebdev.com",
+  description: `Strangers Hub is an innovative website that provides a platform for people to express their thoughts and ideas anonymously. This website is a virtual space that allows individuals to share their experiences, opinions, and perspectives without the need for registration or login.
 
-    The concept of Words of Strangers is simple yet powerful. It aims to break down the barriers that often prevent people from speaking out and sharing their ideas with the world. With this platform, users can write about anything that comes to their minds, whether it's a personal story, a social issue, a philosophical question, or a creative piece.
+    The concept of Strangers Hub is simple yet powerful. It aims to break down the barriers that often prevent people from speaking out and sharing their ideas with the world. With this platform, users can write about anything that comes to their minds, whether it's a personal story, a social issue, a philosophical question, or a creative piece.
     
-    The anonymity feature of the website is what makes it unique. It enables users to share their ideas without the fear of judgment, criticism, or backlash. By providing a safe and non-judgmental space, Words of Strangers encourages people to speak their minds freely and without inhibition.
+    The anonymity feature of the website is what makes it unique. It enables users to share their ideas without the fear of judgment, criticism, or backlash. By providing a safe and non-judgmental space, Strangers Hub encourages people to speak their minds freely and without inhibition.
     
     The website's interface is user-friendly and straightforward, making it easy for anyone to use. Users can simply type in their ideas, add a title, and hit submit. Once submitted, the ideas are displayed on the website for others to read and engage with.
     
-    Words of Strangers is an ideal platform for those who want to express their ideas without revealing their identity. It is a place where people can share their perspectives and connect with others who may share similar thoughts or experiences. This website is not only a tool for self-expression but also a means of fostering a sense of community and understanding.`,
-  url: "wordsofstrangers.bakiwebdev.com",
+    Strangers Hub is an ideal platform for those who want to express their ideas without revealing their identity. It is a place where people can share their perspectives and connect with others who may share similar thoughts or experiences. This website is not only a tool for self-expression but also a means of fostering a sense of community and understanding.`,
+  url: "strangershub.bakiwebdev.com",
   type: "website",
   robots: "follow, index",
-  image:
-    "https://res.cloudinary.com/dcmvndqd1/image/upload/v1674046971/Panda%20Steeze/WhatsApp_Image_2022-07-12_at_17.53.41-removebg-preview_uwa6vl.png",
+  // image:
+  //   "https://res.cloudinary.com/dcmvndqd1/image/upload/v1674046971/Panda%20Steeze/WhatsApp_Image_2022-07-12_at_17.53.41-removebg-preview_uwa6vl.png",
 };
 
 type SeoProps = {
@@ -34,16 +34,6 @@ export default function Seo(props: SeoProps) {
     ? `${props.templateTitle} | ${meta.siteName}`
     : meta.title;
 
-  // Use siteName if there is templateTitle
-  // but show full title if there is none
-  // !STARTERCONF Follow config for opengraph, by deploying one on https://github.com/theodorusclarence/og
-  // ? Uncomment code below if you want to use default open graph
-  // meta['image'] = openGraph({
-  //   description: meta.description,
-  //   siteName: props.templateTitle ? meta.siteName : meta.title,
-  //   templateTitle: props.templateTitle,
-  // });
-
   return (
     <Head>
       <title>{meta.title}</title>
@@ -56,14 +46,14 @@ export default function Seo(props: SeoProps) {
       <meta property="og:site_name" content={meta.siteName} />
       <meta property="og:description" content={meta.description} />
       <meta property="og:title" content={meta.title} />
-      <meta name="image" property="og:image" content={meta.image} />
+      {/* <meta name="image" property="og:image" content={meta.image} /> */}
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       {/* // !STARTERCONF Remove or change to your handle */}
       {/* <meta name='twitter:site' content='@th_clarence' /> */}
       <meta name="twitter:title" content={meta.title} />
       <meta name="twitter:description" content={meta.description} />
-      <meta name="twitter:image" content={meta.image} />
+      {/* <meta name="twitter:image" content={meta.image} /> */}
       {meta.date && (
         <>
           <meta property="article:published_time" content={meta.date} />
