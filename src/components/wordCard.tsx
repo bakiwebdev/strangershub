@@ -6,8 +6,12 @@ import {
 } from "@heroicons/react/24/outline";
 import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/solid";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 interface WordCardProps {
+  id: string;
+  date: string;
+  time: string;
   heading: string;
   body: string;
   likes: number;
@@ -17,6 +21,9 @@ interface WordCardProps {
 }
 
 const WordCard = ({
+  id,
+  date,
+  time,
   heading,
   body,
   likes,
@@ -33,7 +40,7 @@ const WordCard = ({
       }}
       className={`bg-gray-800 flex flex-col p-4 border rounded-md cursor-pointer`}
     >
-      <div onClick={() => console.log("main card clicked")} className="flex-1">
+      <Link href={`/words/${id}`} className="flex-1">
         {/* heading */}
         <div className="flex flex-col gap-1">
           {/* note title */}
@@ -47,7 +54,9 @@ const WordCard = ({
           </h3>
           <div className="flex justify-center items-center gap-2 w-fit">
             {/* actual data */}
-            <p className="text-xs text-gray-400">today - 12:00pm</p>
+            <p className="text-xs text-gray-400">
+              {date} - {time}
+            </p>
             <GlobeEuropeAfricaIcon className="w-3 h-3 text-gray-200" />
           </div>
         </div>
@@ -60,7 +69,7 @@ const WordCard = ({
         >
           {body}
         </section>
-      </div>
+      </Link>
       {/* like, dislike, comment */}
       <div
         onClick={() => console.log("reaction button clicked")}

@@ -26,10 +26,13 @@ const Words = () => {
       <Seo />
       <WordsLayout>
         {loading && cardSkeleton}
-        {strangerWords.map((strangerWord: any, index: number) => {
+        {strangerWords.map((strangerWord: any, idx: number) => {
           return (
             <WordCard
-              key={index}
+              key={idx}
+              id={strangerWord._id}
+              date={strangerWord.date}
+              time={strangerWord.time}
               heading={strangerWord.title}
               body={strangerWord.content}
               likes={strangerWord.likes}
