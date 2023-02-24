@@ -17,7 +17,7 @@ const Words = () => {
     <>
       <Seo />
       <WordsLayout>
-        {strangerWords.map((strangerWord) => {
+        {strangerWords.map((strangerWord: any) => {
           return (
             <WordCard
               key={strangerWord._id}

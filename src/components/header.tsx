@@ -68,7 +68,7 @@ function Header() {
                           alt="Panda Steeze Logo"
                         />
                         <h3 className="text-md mr-2 font-semibold ml-3 text-cusblack">
-                          Panda Steeze
+                          Words Of Strangers
                         </h3>
                       </Link>
                       <Popover.Button className="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">

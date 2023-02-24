@@ -1,11 +1,18 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 const defaultMeta = {
-  title: "Panda Steeze",
-  siteName: "Panda Steeze",
-  description:
-    "The Panda Steeze website is the ultimate destination for streetwear enthusiasts looking for the latest and greatest in t-shirts and hoodies. the site is designed to be fast, responsive, and easy to navigate, making it easy for customers to find the perfect t-shirt or hoodie for them.",
-  url: "https://panda-steeze.vercel.app",
+  title: "Words Of Strangers",
+  siteName: "wordsofstrangers.bakiwebdev.com",
+  description: `Words of Strangers is an innovative website that provides a platform for people to express their thoughts and ideas anonymously. This website is a virtual space that allows individuals to share their experiences, opinions, and perspectives without the need for registration or login.
+
+    The concept of Words of Strangers is simple yet powerful. It aims to break down the barriers that often prevent people from speaking out and sharing their ideas with the world. With this platform, users can write about anything that comes to their minds, whether it's a personal story, a social issue, a philosophical question, or a creative piece.
+    
+    The anonymity feature of the website is what makes it unique. It enables users to share their ideas without the fear of judgment, criticism, or backlash. By providing a safe and non-judgmental space, Words of Strangers encourages people to speak their minds freely and without inhibition.
+    
+    The website's interface is user-friendly and straightforward, making it easy for anyone to use. Users can simply type in their ideas, add a title, and hit submit. Once submitted, the ideas are displayed on the website for others to read and engage with.
+    
+    Words of Strangers is an ideal platform for those who want to express their ideas without revealing their identity. It is a place where people can share their perspectives and connect with others who may share similar thoughts or experiences. This website is not only a tool for self-expression but also a means of fostering a sense of community and understanding.`,
+  url: "wordsofstrangers.bakiwebdev.com",
   type: "website",
   robots: "follow, index",
   image:
