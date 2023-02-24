@@ -32,7 +32,7 @@ function Header() {
   //     setIsOpen(!isOpen);
   //   };
   return (
-    <nav className="w-full mx-auto fixed bg-slate-800 z-30 py-2 md:px-0 duration-200">
+    <nav className="w-full mx-auto fixed bg-slate-800 z-30 py-2 md:px-0 duration-200 border-b border-gray-500">
       <div className="px-2 navtop relative max-w-6xl mx-auto flex justify-between place-items-center py-1.5">
         <div className="burger flex items-center">
           <Popover className={"relative "}>
