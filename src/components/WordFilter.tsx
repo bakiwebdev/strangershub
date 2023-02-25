@@ -1,29 +1,12 @@
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
-import Modal from "react-modal";
-
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
+import InputModal from "./InputModal";
 
 const WordFilter = () => {
-  let subtitle;
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   function openModal() {
     setIsOpen(true);
-  }
-
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    subtitle.style.color = "#f00";
   }
 
   function closeModal() {
@@ -38,7 +21,7 @@ const WordFilter = () => {
         <div></div>
         {/* post words */}
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={openModal}
           className="flex justify-center items-center px-2 md:px-5 py-2 rounded-full text-slate-800 bg-orange-500 font-semibold"
         >
           <span className="hidden md:block">Have something to say ?</span>
@@ -46,24 +29,7 @@ const WordFilter = () => {
         </button>
       </div>
       {/* modal */}
-      <Modal
-        isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
-        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2>
-        <button onClick={closeModal}>close</button>
-        <div>I am a modal</div>
-        <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button>inside</button>
-          <button>the modal</button>
-        </form>
-      </Modal>
+      <InputModal isOpen={isOpen} onRequestClose={closeModal} />
     </div>
   );
 };
