@@ -18,7 +18,7 @@ const Words = () => {
   }
 
   useEffect(() => {
-    axios.get("https://strangers-hub.onrender.com/api/v1/post").then((res) => {
+    axios.get("https://strangers-hub.onrender.com/api/v1/post?page=1&limit=100").then((res) => {
       setStrangerWords(res.data.posts);
       setLoading(false);
     });
@@ -26,7 +26,7 @@ const Words = () => {
 
   const updateEvent = () => {
     setLoading(true);
-    axios.get("https://strangers-hub.onrender.com/api/v1/post").then((res) => {
+    axios.get("https://strangers-hub.onrender.com/api/v1/post?page=1&limit=100").then((res) => {
       setStrangerWords(res.data.posts);
       setLoading(false);
     });
