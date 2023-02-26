@@ -9,7 +9,7 @@ import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const PostCard = ({
   id,
@@ -24,6 +24,7 @@ const PostCard = ({
   const commentArea = "comment-input-area";
   const [postLikes, setPostLikes] = useState<number>(likes);
   const [postDislikes, setPostDislikes] = useState<number>(dislikes);
+  const [commentLength, setCommentLength] = useState<number>(0);
 
   // handle like button
   const handleLikeButton = async () => {
@@ -42,6 +43,14 @@ const PostCard = ({
         setPostDislikes(res.data.dislikes);
       });
   };
+
+  useEffect(() => {
+    axios
+      .get(
+        `https://strangers-hub.onrender.com/api/v1/post/${id}/comment?page1&limit=1`
+      )
+      .then((res) => setCommentLength(res.data.total));
+  }, [id]);
   return (
     <motion.div
       whileHover={{ scale: 1.2 }}
@@ -114,7 +123,7 @@ const PostCard = ({
           <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-blue-500/10 transform transition-all ease-in-out duration-500">
             <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4" />
           </div>
-          {/* <p className="font-mono text-xs font-light">{comments}</p> */}
+          <p className="font-mono text-xs font-light">{commentLength}</p>
         </Link>
         {/* share icon */}
         <div className="group flex gap-1 text-green-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
