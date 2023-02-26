@@ -1,3 +1,4 @@
+import { PostInterface } from "@/Interface/PostInterface";
 import {
   HandThumbDownIcon,
   ChatBubbleOvalLeftEllipsisIcon,
@@ -5,32 +6,42 @@ import {
   HeartIcon,
 } from "@heroicons/react/24/outline";
 import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/solid";
+import axios from "axios";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useState } from "react";
 
-interface WordCardProps {
-  id: string;
-  date: string;
-  time: string;
-  heading: string;
-  body: string;
-  likes: number;
-  dislikes: number;
-  comments?: number;
-  color: string;
-}
-
-const WordCard = ({
+const PostCard = ({
   id,
   date,
   time,
-  heading,
+  title,
   body,
   likes,
   dislikes,
-  comments = 0,
   color,
-}: WordCardProps) => {
+}: PostInterface) => {
+  const commentArea = "comment-input-area";
+  const [postLikes, setPostLikes] = useState<number>(likes);
+  const [postDislikes, setPostDislikes] = useState<number>(dislikes);
+
+  // handle like button
+  const handleLikeButton = async () => {
+    await axios
+      .get(`https://strangers-hub.onrender.com/api/v1/post/${id}/like`)
+      .then((res) => {
+        setPostLikes(res.data.likes as number);
+      });
+  };
+
+  // handle dislike button
+  const handleDislikeButton = async () => {
+    await axios
+      .get(`https://strangers-hub.onrender.com/api/v1/post/${id}/dislike`)
+      .then((res) => {
+        setPostDislikes(res.data.dislikes);
+      });
+  };
   return (
     <motion.div
       whileHover={{ scale: 1.2 }}
@@ -40,8 +51,8 @@ const WordCard = ({
       }}
       className={`bg-gray-800 flex flex-col p-4 border rounded-md cursor-pointer`}
     >
-      <Link href={`/words/${id}`} className="flex-1">
-        {/* heading */}
+      <Link href={`/strangersPost/${id}`} className="flex-1">
+        {/* title */}
         <div className="flex flex-col gap-1">
           {/* note title */}
           <h3
@@ -50,7 +61,7 @@ const WordCard = ({
             }}
             className="font-semibold text-ellipsis whitespace-nowrap overflow-hidden"
           >
-            {heading}
+            {title}
           </h3>
           <div className="flex justify-center items-center gap-2 w-fit">
             {/* actual data */}
@@ -76,26 +87,35 @@ const WordCard = ({
         className="flex justify-between mt-2 px-4 sm:px-3 md:px-2"
       >
         {/* heart icon */}
-        <div className="group flex gap-1 text-red-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
+        <div
+          onClick={handleLikeButton}
+          className="group flex gap-1 text-red-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+        >
           <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-red-500/10 transform transition-all ease-in-out duration-500">
             <HeartIcon className="w-4 h-4" />
           </div>
-          <p className="font-mono text-xs font-light">{likes}</p>
+          <p className="font-mono text-xs font-light">{postLikes}</p>
         </div>
         {/* thumbs down icon */}
-        <div className="group flex gap-1 text-orange-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
+        <div
+          onClick={handleDislikeButton}
+          className="group flex gap-1 text-orange-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+        >
           <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-orange-500/10 transform transition-all ease-in-out duration-500">
             <HandThumbDownIcon className="w-4 h-4" />
           </div>
-          <p className="font-mono text-xs font-light">{dislikes}</p>
+          <p className="font-mono text-xs font-light">{postDislikes}</p>
         </div>
         {/* chat icon */}
-        <div className="group flex gap-1 text-blue-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
+        <Link
+          href={`/strangersPost/${id}#${commentArea}`}
+          className="group flex gap-1 text-blue-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+        >
           <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-blue-500/10 transform transition-all ease-in-out duration-500">
             <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4" />
           </div>
-          <p className="font-mono text-xs font-light">{comments}</p>
-        </div>
+          {/* <p className="font-mono text-xs font-light">{comments}</p> */}
+        </Link>
         {/* share icon */}
         <div className="group flex gap-1 text-green-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
           <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-green-500/10 transform transition-all ease-in-out duration-500">
@@ -107,4 +127,4 @@ const WordCard = ({
   );
 };
 
-export default WordCard;
+export default PostCard;

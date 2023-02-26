@@ -1,15 +1,9 @@
 import Link from "next/link";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment } from "react";
 import { useRouter } from "next/dist/client/router";
 import { Popover, Transition } from "@headlessui/react";
 import { Bars3Icon } from "@heroicons/react/24/solid";
-import {
-  XMarkIcon,
-  RectangleStackIcon,
-  ShoppingBagIcon,
-  HeartIcon,
-  // UserIcon,
-} from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 const Header = () => {
   const router = useRouter();
@@ -61,19 +55,19 @@ const Header = () => {
                 </div>
                 {/* mobile view link */}
                 <div className="flex flex-col gap-5 px-5 pb-5">
-                  <Link href={"/words"}>
+                  <Link href={"/strangersPost"}>
                     <h3
                       className={`px-4 py-1 rounded-full w-full transform transition-all duration-300 text-md ${
                         currentPage === "words"
-                          ? "text-blue-500 bg-blue-500/20"
-                          : "text-blue-500/60 hover:text-blue-500 hover:bg-blue-500/20"
+                          ? "text-orange-500 bg-orange-500/20"
+                          : "text-orange-500/60 hover:text-orange-500 hover:bg-orange-500/20"
                       }`}
                     >
-                      Words
+                      Strangers Post
                     </h3>
                   </Link>
                   {/* Live link */}
-                  <Link href={"/chat"}>
+                  {/* <Link href={"/chat"}>
                     <h3
                       className={`px-4 py-1 rounded-full w-full transform transition-all duration-300 text-md  ${
                         currentPage === "chat"
@@ -83,9 +77,9 @@ const Header = () => {
                     >
                       Live Chat
                     </h3>
-                  </Link>
+                  </Link> */}
                   {/* Room link */}
-                  <Link href={"/rooms"}>
+                  {/* <Link href={"/rooms"}>
                     <h3
                       className={`px-4 py-1 rounded-full w-full transform transition-all duration-300 text-md ${
                         currentPage === "rooms"
@@ -95,7 +89,7 @@ const Header = () => {
                     >
                       Rooms
                     </h3>
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </Popover.Panel>
@@ -104,19 +98,19 @@ const Header = () => {
 
         {/* nav links */}
         <div className="sm:flex gap-5 hidden">
-          <Link href={"/words"}>
+          <Link href={"/strangersPost"}>
             <h3
               className={` px-4 py-1 rounded-full w-fit transform transition-all duration-300 text-lg ${
-                currentPage === "words"
-                  ? "text-blue-500 bg-blue-500/20"
-                  : "text-blue-500/60 hover:text-blue-500 hover:bg-blue-500/20"
+                currentPage === "strangersPost"
+                  ? "text-orange-500 bg-orange-500/20"
+                  : "text-orange-500/60 hover:text-orange-500 hover:bg-orange-500/20"
               }`}
             >
-              Words
+              Strangers Post
             </h3>
           </Link>
           {/* Live link */}
-          <Link href={"/chat"}>
+          {/* <Link href={"/chat"}>
             <h3
               className={` px-4 py-1 rounded-full w-fit transform transition-all duration-300 text-lg ${
                 currentPage === "chat"
@@ -126,9 +120,9 @@ const Header = () => {
             >
               Live Chat
             </h3>
-          </Link>
+          </Link> */}
           {/* Room link */}
-          <Link href={"/rooms"}>
+          {/* <Link href={"/rooms"}>
             <h3
               className={` px-4 py-1 rounded-full w-fit transform transition-all duration-300 text-lg ${
                 currentPage === "rooms"
@@ -138,7 +132,7 @@ const Header = () => {
             >
               Rooms
             </h3>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </nav>
