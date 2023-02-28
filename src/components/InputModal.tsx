@@ -2,6 +2,8 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { useState } from "react";
 import Modal from "react-modal";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/pages/_app";
 
 interface InputModalProps {
   isOpen: boolean;
@@ -9,6 +11,7 @@ interface InputModalProps {
 }
 
 const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const [post, setPost] = useState({
     title: "",
     body: "",
@@ -16,17 +19,18 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
     color: "ffffff",
   });
 
-  // post submit
-  const handlePostSubmit = async () => {
-    try {
-      await axios.post(`https://strangers-hub.onrender.com/api/v1/post`, post);
-      // if success remove
+  // mutate request
+  const { mutate, isLoading: isPostLoading } = useMutation({
+    mutationFn: () => {
+      return axios.post(`${baseUrl}/api/v1/post`, post);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getPosts"] });
       setPost({ title: "", body: "", hashtags: "", color: "ffffff" });
       onRequestClose();
-    } catch (error) {
-      // Handle the error
-    }
-  };
+    },
+  });
+
   let colorList = [
     "ffffff",
     "2BAE66FF",
@@ -133,7 +137,7 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
         </div>
         {/* Post button */}
         <button
-          onClick={handlePostSubmit}
+          onClick={() => mutate()}
           className="flex justify-center items-center px-2 md:px-5 py-2 rounded-full text-slate-800 bg-orange-500 font-semibold"
         >
           Post

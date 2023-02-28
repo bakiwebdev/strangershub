@@ -2,7 +2,7 @@ import { PencilIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import InputModal from "./InputModal";
 
-const WordFilter = ({ onUpdateRequest }: { onUpdateRequest: () => void }) => {
+const WordFilter = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   function openModal() {
@@ -11,7 +11,6 @@ const WordFilter = ({ onUpdateRequest }: { onUpdateRequest: () => void }) => {
 
   function closeModal() {
     setIsOpen(false);
-    onUpdateRequest();
   }
 
   return (

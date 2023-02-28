@@ -55,7 +55,7 @@ const Header = () => {
                 </div>
                 {/* mobile view link */}
                 <div className="flex flex-col gap-5 px-5 pb-5">
-                  <Link href={"/strangersPost"}>
+                  <Link href={"/post"}>
                     <h3
                       className={`px-4 py-1 rounded-full w-full transform transition-all duration-300 text-md ${
                         currentPage === "words"
@@ -98,10 +98,10 @@ const Header = () => {
 
         {/* nav links */}
         <div className="sm:flex gap-5 hidden">
-          <Link href={"/strangersPost"}>
+          <Link href={"/post"}>
             <h3
               className={` px-4 py-1 rounded-full w-fit transform transition-all duration-300 text-lg ${
-                currentPage === "strangersPost"
+                currentPage === "post"
                   ? "text-orange-500 bg-orange-500/20"
                   : "text-orange-500/60 hover:text-orange-500 hover:bg-orange-500/20"
               }`}
