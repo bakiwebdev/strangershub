@@ -11,7 +11,7 @@ const Header = () => {
   const currentPage = router.pathname.split("/")[1];
 
   return (
-    <nav className="w-full mx-auto fixed bg-slate-900 z-30 py-2 md:px-0 duration-200 border-b border-gray-500">
+    <nav className="w-full mx-auto fixed top-0 right-0 bg-slate-900 z-30 py-2 px-4 duration-200 border-b border-gray-500">
       <div className="px-2 relative max-w-7xl mx-auto flex justify-between place-items-center py-1.5">
         <Link href="/" className="flex w-fit gap-2">
           <Image src="logo/logo2.svg" alt="Logo" width={50} height={50} />
