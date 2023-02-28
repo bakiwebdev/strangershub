@@ -33,12 +33,12 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
 
   let colorList = [
     "ffffff",
-    "2BAE66FF",
-    "EDFF00FF",
-    "00A4CCFF",
-    "FFA177FF",
-    "A2A2A1FF",
-    "F9A12EFF",
+    "2BAE66",
+    "EDFF00",
+    "00A4CC",
+    "FFA177",
+    "A2A2A1",
+    "F9A12E",
     "FE4773",
     "933DC9",
     "61b59f",
@@ -48,10 +48,6 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
     "FF7C00",
     "8FBC8F",
     "FF6347",
-    "FF8C00",
-    "008B8B",
-    "B8860B",
-    "9932CC",
   ];
   return (
     <Modal
