@@ -15,7 +15,6 @@ const WordCardSkeleton = () => {
         </div>
         {/* like, dislike, comment */}
         <div
-          onClick={() => console.log("reaction button clicked")}
           className="flex justify-between mt-2 px-4 sm:px-3 md:px-2 z-10"
         >
           <Skeleton circle height="20px" width={"20px"} />

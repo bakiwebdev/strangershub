@@ -4,6 +4,7 @@ import { useRouter } from "next/dist/client/router";
 import { Popover, Transition } from "@headlessui/react";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 const Header = () => {
   const router = useRouter();
@@ -12,12 +13,10 @@ const Header = () => {
   return (
     <nav className="w-full mx-auto fixed bg-slate-900 z-30 py-2 md:px-0 duration-200 border-b border-gray-500">
       <div className="px-2 relative max-w-7xl mx-auto flex justify-between place-items-center py-1.5">
-        <Link href="/">
+        <Link href="/" className="flex w-fit gap-2">
+          <Image src="logo/logo2.svg" alt="Logo" width={50} height={50} />
           <h3 className="text-xl mr-2 font-semibold ml-3 flex justify-center items-center gap-1">
-            Strangers
-            <span className="bg-orange-500 px-2 py-1 rounded-md text-slate-900">
-              hub
-            </span>
+            Strangers Hub
           </h3>
         </Link>
         <Popover className="relative block sm:hidden">
@@ -41,11 +40,14 @@ const Header = () => {
                 <div className="px-5 pt-5 pb-6">
                   <div className="flex items-center justify-between">
                     <Link href="/" className="flex items-center">
+                      <Image
+                        src="logo/logo2.svg"
+                        alt="Logo"
+                        width={50}
+                        height={50}
+                      />
                       <h3 className="text-md mr-2 font-semibold ml-3 flex justify-center items-center gap-1">
-                        Strangers
-                        <span className="bg-orange-500 px-2 py-1 rounded-md text-slate-900">
-                          hub
-                        </span>
+                        Strangers Hub
                       </h3>
                     </Link>
                     <Popover.Button className="inline-flex items-center justify-center rounded-md bg-slate-900 p-2 text-green-500 hover:bg-slate-900/20 hover:text-green-500/20 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-none">
@@ -55,10 +57,10 @@ const Header = () => {
                 </div>
                 {/* mobile view link */}
                 <div className="flex flex-col gap-5 px-5 pb-5">
-                  <Link href={"/strangersPost"}>
+                  <Link href={"/post"}>
                     <h3
                       className={`px-4 py-1 rounded-full w-full transform transition-all duration-300 text-md ${
-                        currentPage === "words"
+                        currentPage === "post"
                           ? "text-orange-500 bg-orange-500/20"
                           : "text-orange-500/60 hover:text-orange-500 hover:bg-orange-500/20"
                       }`}
@@ -98,10 +100,10 @@ const Header = () => {
 
         {/* nav links */}
         <div className="sm:flex gap-5 hidden">
-          <Link href={"/strangersPost"}>
+          <Link href={"/post"}>
             <h3
               className={` px-4 py-1 rounded-full w-fit transform transition-all duration-300 text-lg ${
-                currentPage === "strangersPost"
+                currentPage === "post"
                   ? "text-orange-500 bg-orange-500/20"
                   : "text-orange-500/60 hover:text-orange-500 hover:bg-orange-500/20"
               }`}

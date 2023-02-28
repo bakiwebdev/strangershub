@@ -22,35 +22,30 @@ const PostCard = ({
   color,
 }: PostInterface) => {
   const commentArea = "comment-input-area";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const [postLikes, setPostLikes] = useState<number>(likes);
   const [postDislikes, setPostDislikes] = useState<number>(dislikes);
   const [commentLength, setCommentLength] = useState<number>(0);
 
   // handle like button
   const handleLikeButton = async () => {
-    await axios
-      .get(`https://strangers-hub.onrender.com/api/v1/post/${id}/like`)
-      .then((res) => {
-        setPostLikes(res.data.likes as number);
-      });
+    await axios.get(`${baseUrl}/api/v1/post/${id}/like`).then((res) => {
+      setPostLikes(res.data.likes as number);
+    });
   };
 
   // handle dislike button
   const handleDislikeButton = async () => {
-    await axios
-      .get(`https://strangers-hub.onrender.com/api/v1/post/${id}/dislike`)
-      .then((res) => {
-        setPostDislikes(res.data.dislikes);
-      });
+    await axios.get(`${baseUrl}/api/v1/post/${id}/dislike`).then((res) => {
+      setPostDislikes(res.data.dislikes);
+    });
   };
 
   useEffect(() => {
     axios
-      .get(
-        `https://strangers-hub.onrender.com/api/v1/post/${id}/comment?page1&limit=1`
-      )
+      .get(`${baseUrl}/api/v1/post/${id}/comment?page1&limit=1`)
       .then((res) => setCommentLength(res.data.total));
-  }, [id]);
+  }, [baseUrl, id]);
   return (
     <motion.div
       whileHover={{ scale: 1.2 }}
@@ -60,7 +55,7 @@ const PostCard = ({
       }}
       className={`bg-gray-800 flex flex-col p-4 border rounded-md cursor-pointer`}
     >
-      <Link href={`/strangersPost/${id}`} className="flex-1">
+      <Link href={`/post/${id}`} className="flex-1">
         {/* title */}
         <div className="flex flex-col gap-1">
           {/* note title */}
@@ -91,10 +86,7 @@ const PostCard = ({
         </section>
       </Link>
       {/* like, dislike, comment */}
-      <div
-        onClick={() => console.log("reaction button clicked")}
-        className="flex justify-between mt-2 px-4 sm:px-3 md:px-2"
-      >
+      <div className="flex justify-between mt-2 px-4 sm:px-3 md:px-2">
         {/* heart icon */}
         <div
           onClick={handleLikeButton}
@@ -117,7 +109,7 @@ const PostCard = ({
         </div>
         {/* chat icon */}
         <Link
-          href={`/strangersPost/${id}#${commentArea}`}
+          href={`/post/${id}#${commentArea}`}
           className="group flex gap-1 text-blue-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
         >
           <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-blue-500/10 transform transition-all ease-in-out duration-500">
