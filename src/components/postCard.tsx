@@ -86,10 +86,7 @@ const PostCard = ({
         </section>
       </Link>
       {/* like, dislike, comment */}
-      <div
-        onClick={() => console.log("reaction button clicked")}
-        className="flex justify-between mt-2 px-4 sm:px-3 md:px-2"
-      >
+      <div className="flex justify-between mt-2 px-4 sm:px-3 md:px-2">
         {/* heart icon */}
         <div
           onClick={handleLikeButton}

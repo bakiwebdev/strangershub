@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "../_app";
+import Link from "next/link";
 
 // get server side props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -68,6 +69,8 @@ const Post = (post: PostInterface) => {
       .get(`${baseUrl}/api/v1/post/${postData.id}/like`)
       .then((res) => {
         setPostData({ ...postData, likes: res.data.likes });
+        console.log("like");
+        queryClient.invalidateQueries({ queryKey: ["getPosts"] });
       });
   };
 
@@ -77,15 +80,8 @@ const Post = (post: PostInterface) => {
       .get(`${baseUrl}/api/v1/post/${postData.id}/dislike`)
       .then((res) => {
         setPostData({ ...postData, dislikes: res.data.dislikes });
+        queryClient.invalidateQueries({ queryKey: ["getPosts"] });
       });
-  };
-
-  const goBackHandler = () => {
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/");
-    }
   };
 
   // Queries
@@ -103,13 +99,13 @@ const Post = (post: PostInterface) => {
   return (
     <section className="max-w-4xl mx-auto pt-20 md:pt-28 px-4 sm:px-8 md:px-6 mb-10 flex flex-col gap-4 relative">
       {/* Back icon */}
-      <div
-        onClick={goBackHandler}
+      <Link
+        href={"/post"}
         className="flex gap-3 justify-center items-center w-fit float-left text-orange-500 px-4 py-2 rounded-full bg-orange-500/10 cursor-pointer hover:bg-orange-500/20 transition translate"
       >
         <ArrowLeftIcon className="w-5 h-5" />
         <p className="text-sm">Back</p>
-      </div>
+      </Link>
       {/* posted time zone & reaction*/}
       <div className="flex justify-between flex-wrap gap-2">
         {/* posted time */}
@@ -120,10 +116,7 @@ const Post = (post: PostInterface) => {
           </p>
         </div>
         {/* reactions */}
-        <div
-          onClick={() => console.log("reaction button clicked")}
-          className="flex justify-between gap-10 mt-2 px-4 sm:px-3 md:px-2 z-10"
-        >
+        <div className="flex justify-between gap-10 mt-2 px-4 sm:px-3 md:px-2 z-10">
           {/* heart icon */}
           <div
             onClick={handleLikeButton}

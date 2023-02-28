@@ -9,13 +9,11 @@ import { useQuery } from "@tanstack/react-query";
 
 const Post = () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
   const cardSkeleton = [];
 
   for (let i = 0; i < 12; i++) {
     cardSkeleton.push(<PostCardSkeleton />);
   }
-
   // Queries
   const { data, isSuccess, isLoading } = useQuery({
     queryKey: ["getPosts"],
