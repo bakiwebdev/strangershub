@@ -113,6 +113,7 @@ const Post = (post: PostInterface) => {
       <Seo
         date={`${postData.date} - ${postData.time}`}
         templateTitle={postData.title}
+        description={postData.body}
       />
       <section className="max-w-4xl mx-auto pt-20 md:pt-28 px-4 sm:px-8 md:px-6 mb-10 flex flex-col gap-4 relative">
         {/* Back icon */}

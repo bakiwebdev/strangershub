@@ -15,12 +15,13 @@ const defaultMeta = {
   url: "https://www.strangershub.fun",
   type: "website",
   robots: "follow, index",
-  image: "/logo/strangers_hub.svg",
+  image: "/strangers_hub.png",
 };
 
 type SeoProps = {
   date?: string;
   templateTitle?: string;
+  description?: string;
 } & Partial<typeof defaultMeta>;
 
 export default function Seo(props: SeoProps) {
@@ -32,6 +33,10 @@ export default function Seo(props: SeoProps) {
   meta["title"] = props.templateTitle
     ? `${props.templateTitle} | ${meta.siteName}`
     : meta.title;
+
+  meta["description"] = props.description
+    ? props.description
+    : meta.description;
 
   return (
     <Head>
