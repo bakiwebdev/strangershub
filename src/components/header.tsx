@@ -5,7 +5,7 @@ import { Popover, Transition } from "@headlessui/react";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import logo from "public/logo/logo2.svg";
+import logo from "public/logo/strangers_hub.svg";
 
 const Header = () => {
   const router = useRouter();
