@@ -47,7 +47,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 const Post = (post: PostInterface) => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const router = useRouter();
   const [postData, setPostData] = useState<PostInterface>(post);
   const [comment, setComment] = useState<string>("");
 

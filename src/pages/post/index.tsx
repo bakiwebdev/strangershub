@@ -1,4 +1,3 @@
-// import { PostInterface } from "@/Interface/PostInterface";
 import Seo from "@/components/SEO";
 import PostFilter from "@/components/postFilter";
 import PostCard from "@/components/postCard";
