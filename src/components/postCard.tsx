@@ -58,6 +58,7 @@ const PostCard = ({
       .get(`${baseUrl}/api/v1/post/${id}/comment?page1&limit=1`)
       .then((res) => setCommentLength(res.data.total));
   }, [baseUrl, id]);
+
   return (
     <motion.div
       whileHover={{ scale: 1.2, transition: { ease: "easeInOut" } }}
