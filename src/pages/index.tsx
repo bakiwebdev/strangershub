@@ -6,7 +6,7 @@ export default function Home() {
     <>
       <Seo />
       {/* <div className="max-w-7xl mx-auto pt-24 sm:px-8 md:px-6 mt-16 px-4 sm:mt-24"> */}
-      <div className="max-w-7xl mx-auto pt-24 sm:px-8 md:px-6 mt-16 px-4 sm:mt-24 text-center">
+      <div className="max-w-7xl mx-auto pt-24 sm:px-8 md:px-6 mt-16 px-4 sm:mt-24 text-center mb-20">
         <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
           <span className="block xl:inline">Share Your Thoughts</span>{" "}
           <span className="block text-orange-600 xl:inline">

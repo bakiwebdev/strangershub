@@ -57,6 +57,8 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
         overlay: {
           backgroundColor: "none",
           zIndex: 40,
+          marginRight: 15,
+          marginLeft: 15,
         },
         content: {
           top: "50%",
@@ -66,6 +68,7 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
           marginRight: "-50%",
           transform: "translate(-50%, -50%)",
           background: "#1E293B",
+          border: `1px solid #${post.color}`,
         },
       }}
       contentLabel="Post input"
@@ -73,10 +76,15 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
       <div className="flex flex-col gap-3">
         {/* close icon */}
         <div className="flex flex-row-reverse mb-4 gap-5 md:gap-40 justify-between items-center">
-          <XMarkIcon
+          <div
             onClick={onRequestClose}
-            className="w-6 h-6 cursor-pointer hover:text-red-500"
-          />
+            className="cursor-pointer inline-flex items-center justify-center rounded-md bg-slate-800 p-2  hover:bg-slate-900/20 hover:text-green-500/20 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-none"
+          >
+            <XMarkIcon
+              className="h-7 w-7 text-orange-500 cursor-pointer"
+              aria-hidden="true"
+            />
+          </div>
           <p>Share ideas without the fear of judgment</p>
         </div>
         {/* headline input */}
@@ -86,7 +94,7 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
             border: `1px solid #${post.color}`,
           }}
           type="text"
-          className="bg-transparent rounded-full px-4 py-2 text-xs focus:outline-none mb-1 shadow-md"
+          className="bg-transparent rounded-md px-4 py-2 text-xs focus:outline-none mb-1 shadow-md"
           placeholder="Catchy headline e.g The humanity we once knew is gone!"
           value={post.title}
           onChange={(e) => setPost({ ...post, title: e.target.value })}
@@ -97,8 +105,8 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
           style={{
             border: `1px solid #${post.color}`,
           }}
-          cols={5}
-          className="bg-transparent rounded-full px-4 py-2 text-xs focus:outline-none mb-1 shadow-md"
+          cols={6}
+          className="bg-transparent rounded-md px-4 py-3 text-xs focus:outline-none mb-1 shadow-md"
           placeholder="What's on your mind ?"
           value={post.body}
           onChange={(e) => setPost({ ...post, body: e.target.value })}
@@ -110,7 +118,7 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
             border: `1px solid #${post.color}`,
           }}
           type="text"
-          className="bg-transparent rounded-full px-4 py-2 text-xs focus:outline-none mb-1 shadow-md"
+          className="bg-transparent rounded-md px-4 py-2 text-xs focus:outline-none mb-1 shadow-md"
           placeholder="#joke #amusing #humor etc..."
           value={post.hashtags}
           onChange={(e) => setPost({ ...post, hashtags: e.target.value })}
