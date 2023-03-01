@@ -70,7 +70,7 @@ const Header = () => {
                     </h3>
                   </Link>
                   {/* Live link */}
-                  {/* <Link href={"/chat"}>
+                  <Link href={"/chat"}>
                     <h3
                       className={`px-4 py-1 rounded-full w-full transform transition-all duration-300 text-md  ${
                         currentPage === "chat"
@@ -80,7 +80,7 @@ const Header = () => {
                     >
                       Live Chat
                     </h3>
-                  </Link> */}
+                  </Link>
                   {/* Room link */}
                   {/* <Link href={"/rooms"}>
                     <h3
@@ -113,7 +113,7 @@ const Header = () => {
             </h3>
           </Link>
           {/* Live link */}
-          {/* <Link href={"/chat"}>
+          <Link href={"/chat"}>
             <h3
               className={` px-4 py-1 rounded-full w-fit transform transition-all duration-300 text-lg ${
                 currentPage === "chat"
@@ -123,7 +123,7 @@ const Header = () => {
             >
               Live Chat
             </h3>
-          </Link> */}
+          </Link>
           {/* Room link */}
           {/* <Link href={"/rooms"}>
             <h3
