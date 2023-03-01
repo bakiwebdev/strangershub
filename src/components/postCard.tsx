@@ -10,6 +10,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Tippy from "@tippyjs/react";
 
 const PostCard = ({
   id,
@@ -26,6 +27,17 @@ const PostCard = ({
   const [postLikes, setPostLikes] = useState<number>(likes);
   const [postDislikes, setPostDislikes] = useState<number>(dislikes);
   const [commentLength, setCommentLength] = useState<number>(0);
+
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopyUrl = () => {
+    const currentUrl = window.location.href;
+    navigator.clipboard.writeText(`${currentUrl}/${id}`);
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
 
   // handle like button
   const handleLikeButton = async () => {
@@ -48,8 +60,8 @@ const PostCard = ({
   }, [baseUrl, id]);
   return (
     <motion.div
-      whileHover={{ scale: 1.2 }}
-      whileTap={{ scale: 1.1 }}
+      whileHover={{ scale: 1.2, transition: { ease: "easeInOut" } }}
+      whileTap={{ scale: 1.1, transition: { ease: "easeInOut" } }}
       style={{
         borderColor: `#${color}`,
       }}
@@ -92,9 +104,11 @@ const PostCard = ({
           onClick={handleLikeButton}
           className="group flex gap-1 text-red-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
         >
-          <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-red-500/10 transform transition-all ease-in-out duration-500">
-            <HeartIcon className="w-4 h-4" />
-          </div>
+          <Tippy content={<span>Like</span>}>
+            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-red-500/10 transform transition-all ease-in-out duration-500">
+              <HeartIcon className="w-4 h-4" />
+            </div>
+          </Tippy>
           <p className="font-mono text-xs font-light">{postLikes}</p>
         </div>
         {/* thumbs down icon */}
@@ -102,9 +116,11 @@ const PostCard = ({
           onClick={handleDislikeButton}
           className="group flex gap-1 text-orange-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
         >
-          <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-orange-500/10 transform transition-all ease-in-out duration-500">
-            <HandThumbDownIcon className="w-4 h-4" />
-          </div>
+          <Tippy content={<span>Dislike</span>}>
+            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-orange-500/10 transform transition-all ease-in-out duration-500">
+              <HandThumbDownIcon className="w-4 h-4" />
+            </div>
+          </Tippy>
           <p className="font-mono text-xs font-light">{postDislikes}</p>
         </div>
         {/* chat icon */}
@@ -112,16 +128,27 @@ const PostCard = ({
           href={`/post/${id}#${commentArea}`}
           className="group flex gap-1 text-blue-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
         >
-          <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-blue-500/10 transform transition-all ease-in-out duration-500">
-            <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4" />
-          </div>
+          <Tippy content={<span>Comments</span>}>
+            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-blue-500/10 transform transition-all ease-in-out duration-500">
+              <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4" />
+            </div>
+          </Tippy>
           <p className="font-mono text-xs font-light">{commentLength}</p>
         </Link>
         {/* share icon */}
-        <div className="group flex gap-1 text-green-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
-          <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-green-500/10 transform transition-all ease-in-out duration-500">
-            <ShareIcon className="w-4 h-4" />
-          </div>
+        <div
+          onClick={handleCopyUrl}
+          className="group flex gap-1 text-green-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+        >
+          <Tippy
+            content={<span>{isCopied ? "Copied!" : "Share URL"}</span>}
+            trigger="click"
+            inertia={true}
+          >
+            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-green-500/10 transform transition-all ease-in-out duration-500">
+              <ShareIcon className="w-4 h-4" />
+            </div>
+          </Tippy>
         </div>
       </div>
     </motion.div>

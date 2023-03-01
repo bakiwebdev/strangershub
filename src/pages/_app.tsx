@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
 import type { AppProps } from "next/app";
+import "tippy.js/dist/tippy.css";
 
 export const queryClient = new QueryClient();
 
