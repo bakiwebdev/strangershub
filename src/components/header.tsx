@@ -81,16 +81,16 @@ const Header = () => {
                       </Link>
                       {/* Live link */}
                       {/* <Link href={"/chat"}>
-                    <h3
-                      className={`px-4 py-1 rounded-full w-full transform transition-all duration-300 text-md  ${
-                        currentPage === "chat"
-                          ? "text-red-500 bg-red-500/20"
-                          : "text-red-500/60 hover:text-red-500 hover:bg-red-500/20"
-                      }`}
-                    >
-                      Live Chat
-                    </h3>
-                  </Link> */}
+                        <Popover.Button
+                          className={`px-4 py-1 rounded-full w-full transform transition-all duration-300 text-md  ${
+                            currentPage === "chat"
+                              ? "text-red-500 bg-red-500/20"
+                              : "text-red-500/60 hover:text-red-500 hover:bg-red-500/20"
+                          }`}
+                        >
+                          Live Chat
+                        </Popover.Button>
+                      </Link> */}
                       {/* Room link */}
                       {/* <Link href={"/rooms"}>
                     <h3
