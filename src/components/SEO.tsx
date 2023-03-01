@@ -15,7 +15,7 @@ const defaultMeta = {
   url: "https://www.strangershub.fun",
   type: "website",
   robots: "follow, index",
-  image: "/strangers_hub.png",
+  image: "/strangers_hub_post.png",
 };
 
 type SeoProps = {
