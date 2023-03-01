@@ -15,6 +15,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "../_app";
 import Link from "next/link";
+import Tippy from "@tippyjs/react";
 
 // get server side props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -49,6 +50,17 @@ const Post = (post: PostInterface) => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const [postData, setPostData] = useState<PostInterface>(post);
   const [comment, setComment] = useState<string>("");
+
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopyUrl = () => {
+    const currentUrl = window.location.href;
+    navigator.clipboard.writeText(`${currentUrl}`);
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
 
   const { mutate, isLoading: isPostCommentLoading } = useMutation({
     mutationFn: () => {
@@ -117,13 +129,16 @@ const Post = (post: PostInterface) => {
         {/* reactions */}
         <div className="flex justify-between gap-10 mt-2 px-4 sm:px-3 md:px-2 z-10">
           {/* heart icon */}
+
           <div
             onClick={handleLikeButton}
             className="group flex gap-1 text-red-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
           >
-            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-red-500/10 transform transition-all ease-in-out duration-500">
-              <HeartIcon className="w-4 h-4" />
-            </div>
+            <Tippy content={<span>{"Like"}</span>} inertia={true}>
+              <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-red-500/10 transform transition-all ease-in-out duration-500">
+                <HeartIcon className="w-4 h-4" />
+              </div>
+            </Tippy>
             <p className="font-mono text-xs font-light">{postData.likes}</p>
           </div>
           {/* thumbs down icon */}
@@ -131,16 +146,27 @@ const Post = (post: PostInterface) => {
             onClick={handleDislikeButton}
             className="group flex gap-1 text-orange-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
           >
-            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-orange-500/10 transform transition-all ease-in-out duration-500">
-              <HandThumbDownIcon className="w-4 h-4" />
-            </div>
+            <Tippy content={<span>{"Dislike"}</span>} inertia={true}>
+              <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-orange-500/10 transform transition-all ease-in-out duration-500">
+                <HandThumbDownIcon className="w-4 h-4" />
+              </div>
+            </Tippy>
             <p className="font-mono text-xs font-light">{postData.dislikes}</p>
           </div>
           {/* share icon */}
-          <div className="group flex gap-1 text-green-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer">
-            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-green-500/10 transform transition-all ease-in-out duration-500">
-              <ShareIcon className="w-4 h-4" />
-            </div>
+          <div
+            onClick={handleCopyUrl}
+            className="group flex gap-1 text-green-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+          >
+            <Tippy
+              content={<span>{isCopied ? "Copied!" : "Share URL"}</span>}
+              trigger="click"
+              inertia={true}
+            >
+              <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-green-500/10 transform transition-all ease-in-out duration-500">
+                <ShareIcon className="w-4 h-4" />
+              </div>
+            </Tippy>
           </div>
         </div>
       </div>
