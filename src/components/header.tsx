@@ -84,8 +84,8 @@ const Header = () => {
                         <Popover.Button
                           className={`px-4 py-1 rounded-full w-full transform transition-all duration-300 text-md  ${
                             currentPage === "chat"
-                              ? "text-red-500 bg-red-500/20"
-                              : "text-red-500/60 hover:text-red-500 hover:bg-red-500/20"
+                              ? "text-green-500 bg-green-500/20"
+                              : "text-green-500/60 hover:text-green-500 hover:bg-green-500/20"
                           }`}
                         >
                           Live Chat
@@ -129,8 +129,8 @@ const Header = () => {
             <h3
               className={` px-4 py-1 rounded-full w-fit transform transition-all duration-300 text-lg ${
                 currentPage === "chat"
-                  ? "text-red-500 bg-red-500/20"
-                  : "text-red-500/60 hover:text-red-500 hover:bg-red-500/20"
+                  ? "text-green-500 bg-green-500/20"
+                  : "text-green-500/60 hover:text-green-500 hover:bg-green-500/20"
               }`}
             >
               Live Chat
