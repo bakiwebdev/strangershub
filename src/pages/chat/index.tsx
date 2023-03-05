@@ -49,9 +49,9 @@ const Post = () => {
     <>
       <Seo />
       {/* chat layout */}
-      <section className="relative max-w-5xl flex flex-col h-screen max-h-full mx-0 md:mx-auto pt-20 pb-10">
+      <section className="relative max-w-5xl flex flex-col h-screen max-h-screen overflow-hidden mx-0 md:mx-auto pt-20 pb-10">
         {/* Chat Section */}
-        <section className="border-b border-slate-600 rounded-md flex-1 w-full max-h-full">
+        <section className="border-b border-slate-600 rounded-md flex-1 w-full max-h-full overflow-hidden">
           {/* welcome message */}
           {showWelcomeMessage && (
             <div className="fixed z-10 w-full max-w-5xl h-fit flex flex-col gap-2 px-2 md:px-10 py-2 bg-gradient-to-r from-green-500/10 to-slate-900">
@@ -76,14 +76,14 @@ const Post = () => {
             </div>
           )}
           {/* conversation list */}
-          <div className="h-full max-h-full flex flex-col-reverse px-2 gap-2 pb-10 overflow-y-auto">
+          <div className="h-full max-h-full flex flex-col-reverse px-2 py-2 gap-2 pb-10 overflow-y-auto">
             {messages.map((msg, idx) => {
               return (
                 <div
                   className={
                     msg.from == "stranger"
-                      ? "px-2 py-1 rounded-lg bg-green-500/50 self-start mx-2"
-                      : "px-2 py-1 rounded-lg bg-orange-500/50 self-end mx-2"
+                      ? "px-3 py-1 rounded-lg bg-slate-800 text-slate-400 tracking-wide self-start mx-2 max-w-[80%] md:max-w-[60%]"
+                      : "px-3 py-1 rounded-lg bg-green-800 text-slate-300 tracking-wide self-end mx-2 max-w-[80%] md:max-w-[60%]"
                   }
                   key={idx}
                 >
@@ -121,11 +121,9 @@ const Post = () => {
             </button>
           </form>
           <p className="mx-2 px-2 text-xs text-slate-400">
-            Welcome to Strangers Hub, where you can connect with other anonymous
-            users from around the world. Our aim is to create a safe and natural
-            environment for you to interact with others. As we continue to
-            improve our platform, we value your feedback to help us enhance your
-            experience.
+            Welcome to Strangers Hub, a safe and natural platform to anonymously
+            connect with users from around the world. We value your feedback as
+            we continue to enhance your experience.
           </p>
         </div>
       </section>
