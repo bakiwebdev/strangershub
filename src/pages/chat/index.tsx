@@ -18,19 +18,53 @@ const Post = () => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [message, setMessage] = useState<string>("");
   const [showWelcomeMessage, setShowWelcomeMessage] = useState<boolean>(true);
+  const [isWaiting, setIsWaiting] = useState<boolean>(false);
+  const [isMatched, setIsMatched] = useState<boolean>(false);
+  const [roomId, setRoomId] = useState<string>("");
+  const [partnerId, setPartnerId] = useState<string>("");
+  const [partnerDisconnected, setPartnerDisconnected] = useState(false);
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      // When a new message is received, add it to the state
-      setMessages([
-        {
-          message: data.message,
-          from: "stranger",
-        },
-        ...messages,
-      ]);
+      if (partnerId === data.from) {
+        setMessages([
+          {
+            message: data.message,
+            from: "stranger",
+          },
+          ...messages,
+        ]);
+      }
     });
-  }, [messages]);
+
+    // check if the user is on waiting for to join
+    socket.on("waiting", (data) => {
+      setIsWaiting(true);
+      setIsMatched(false);
+    });
+
+    // check if the user is on waiting for to join
+    socket.on("matched", (data) => {
+      setIsWaiting(false);
+      setIsMatched(true);
+      setRoomId(data.roomId);
+      setPartnerId(data.partnerId);
+      console.log("room id: ", data.roomId);
+    });
+
+    // on disconnected
+    socket.on("disconnected", (data) => {
+      console.log("disconnected : ", data);
+    });
+    // partner disconnected
+    socket.on("partnerDisconnected", () => {
+      console.log("partner disconnected");
+      setIsWaiting(true);
+      setIsMatched(false);
+      setRoomId("");
+      setPartnerDisconnected(true);
+    });
+  }, [messages, partnerId, roomId]);
 
   const handleSendMessage = (e: any) => {
     e.preventDefault();
@@ -41,7 +75,7 @@ const Post = () => {
       },
       ...messages,
     ]);
-    socket.emit("send_message", { message });
+    socket.emit("send_message", { roomId, message });
     setMessage("");
   };
 
@@ -51,7 +85,7 @@ const Post = () => {
       {/* chat layout */}
       <section className="relative max-w-5xl flex flex-col h-screen max-h-screen overflow-hidden mx-0 md:mx-auto pt-20 pb-10">
         {/* Chat Section */}
-        <section className="border-b border-slate-600 rounded-md flex-1 w-full max-h-full overflow-hidden">
+        <section className="relative border-b border-slate-600 rounded-md flex-1 w-full max-h-full overflow-hidden">
           {/* welcome message */}
           {showWelcomeMessage && (
             <div className="fixed z-10 w-full max-w-5xl h-fit flex flex-col gap-2 px-2 md:px-10 py-2 bg-gradient-to-r from-green-500/10 to-slate-900">
@@ -91,6 +125,11 @@ const Post = () => {
                 </div>
               );
             })}
+          </div>
+          {/* event display area */}
+          <div className="absolute bottom-0 px-2 text-sm rounded-sm bg-yellow-700 w-full text-slate-300">
+            {isWaiting && "Searching ..."}
+            {isMatched && roomId && `connected with ${roomId}`}
           </div>
         </section>
         {/* message input area */}
