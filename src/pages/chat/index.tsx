@@ -1,6 +1,9 @@
 import Seo from "@/components/SEO";
+import { Popover } from "@headlessui/react";
 import {
+  ArrowRightOnRectangleIcon,
   PaperAirplaneIcon,
+  PlusIcon,
   RectangleGroupIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
@@ -19,52 +22,48 @@ const Post = () => {
   const [message, setMessage] = useState<string>("");
   const [showWelcomeMessage, setShowWelcomeMessage] = useState<boolean>(true);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
-  const [isMatched, setIsMatched] = useState<boolean>(false);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
   const [partnerId, setPartnerId] = useState<string>("");
-  const [partnerDisconnected, setPartnerDisconnected] = useState(false);
 
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      if (partnerId === data.from) {
-        setMessages([
-          {
-            message: data.message,
-            from: "stranger",
-          },
-          ...messages,
-        ]);
-      }
-    });
-
     // check if the user is on waiting for to join
     socket.on("waiting", (data) => {
       setIsWaiting(true);
-      setIsMatched(false);
+      setIsConnected(false);
     });
 
     // check if the user is on waiting for to join
     socket.on("matched", (data) => {
       setIsWaiting(false);
-      setIsMatched(true);
+      setIsConnected(true);
       setRoomId(data.roomId);
       setPartnerId(data.partnerId);
-      console.log("room id: ", data.roomId);
-    });
-
-    // on disconnected
-    socket.on("disconnected", (data) => {
-      console.log("disconnected : ", data);
     });
     // partner disconnected
     socket.on("partnerDisconnected", () => {
-      console.log("partner disconnected");
-      setIsWaiting(true);
-      setIsMatched(false);
+      socket.emit("leave", roomId);
+      setMessages([]);
       setRoomId("");
-      setPartnerDisconnected(true);
+      socket.emit("join");
+      setIsWaiting(true);
     });
   }, [messages, partnerId, roomId]);
+
+  // on receive message
+  socket.on("receive_message", (data) => {
+    if (partnerId === data.from) {
+      setMessages([
+        {
+          message: data.message,
+          from: "stranger",
+        },
+        ...messages,
+      ]);
+    }
+    console.log("receive message");
+  });
 
   const handleSendMessage = (e: any) => {
     e.preventDefault();
@@ -77,6 +76,23 @@ const Post = () => {
     ]);
     socket.emit("send_message", { roomId, message });
     setMessage("");
+  };
+
+  const startRoom = () => {
+    if (!roomId) {
+      socket.emit("join");
+      setIsSearching(true);
+    } else leaveRoom();
+  };
+
+  const leaveRoom = () => {
+    if (roomId) {
+      socket.emit("leave", roomId);
+      setIsConnected(false);
+      setIsWaiting(false);
+      setIsSearching(false);
+      setMessages([]);
+    }
   };
 
   return (
@@ -127,9 +143,29 @@ const Post = () => {
             })}
           </div>
           {/* event display area */}
-          <div className="absolute bottom-0 px-2 text-sm rounded-sm bg-yellow-700 w-full text-slate-300">
-            {isWaiting && "Searching ..."}
-            {isMatched && roomId && `connected with ${roomId}`}
+          <div className="absolute bottom-0 px-2 text-sm rounded-sm w-full flex">
+            {!isSearching && (
+              <p className="mx-auto py-3 text-sm text-slate-300">
+                <span
+                  onClick={startRoom}
+                  className="text-blue-400 underline cursor-pointer"
+                >
+                  Start chatting
+                </span>{" "}
+                with a strangers
+              </p>
+            )}
+            {/* when client is searching but not on waiting list */}
+            {!isConnected && isWaiting && (
+              <p className="mx-auto py-3 text-sm text-slate-300">
+                Looking for stranger ...
+              </p>
+            )}
+            {isConnected && (
+              <p className="text-slate-600 text-xs">
+                You&apos;re now chatting with a random stranger.
+              </p>
+            )}
           </div>
         </section>
         {/* message input area */}
@@ -140,7 +176,29 @@ const Post = () => {
             className="mt-2 flex gap-1 justify-start items-center px-2 lg:px-5 py-2 rounded-md bg-slate-700/20 mx-2 lg:mx-0"
           >
             <div className="flex justify-center items-center pr-2 border-r border-slate-500">
-              <RectangleGroupIcon className="w-6 h-7 text-slate-400" />
+              <Popover className="relative">
+                <Popover.Button className="outline-none">
+                  <RectangleGroupIcon className="w-6 h-7 text-orange-500" />
+                </Popover.Button>
+                <Popover.Panel className="absolute bottom-10 left-0 z-10">
+                  <div className="rounded-lg bg-slate-800 shadow-lg ring-1 ring-black ring-opacity-5 flex flex-col items-start gap-4 w-fit py-2 px-3">
+                    <div
+                      onClick={startRoom}
+                      className="flex w-fit gap-3 justify-center items-center text-green-400 hover:text-green-400/50 cursor-pointer"
+                    >
+                      <p className="text-md text-lg">New</p>
+                      <PlusIcon className="w-5 h-5" />
+                    </div>
+                    <div
+                      onClick={leaveRoom}
+                      className="flex gap-3 justify-center items-center text-red-400 hover:text-red-400/50 cursor-pointer"
+                    >
+                      <p className="text-md text-lg">Leave</p>
+                      <ArrowRightOnRectangleIcon className="w-5 h-5" />
+                    </div>
+                  </div>
+                </Popover.Panel>
+              </Popover>
             </div>
             <input
               type="text"
