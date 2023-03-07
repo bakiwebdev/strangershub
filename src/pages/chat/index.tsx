@@ -1,5 +1,6 @@
 import Seo from "@/components/SEO";
 import { Popover } from "@headlessui/react";
+import parse from "html-react-parser";
 import {
   ArrowRightOnRectangleIcon,
   PaperAirplaneIcon,
@@ -26,12 +27,32 @@ const Post = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
   const [partnerId, setPartnerId] = useState<string>("");
+  const [isTyping, setIsTyping] = useState(false);
+  let typingTimeout: any = null;
+
+  useEffect(() => {
+    if (message && roomId) {
+      socket.emit("typing", { roomId });
+    }
+  }, [message, roomId]);
 
   useEffect(() => {
     // check if the user is on waiting for to join
     socket.on("waiting", (data) => {
       setIsWaiting(true);
       setIsConnected(false);
+    });
+
+    socket.on("stranger_typing", (strangerId) => {
+      if (strangerId === partnerId) {
+        setIsTyping(true);
+        if (typingTimeout) {
+          clearTimeout(typingTimeout);
+        }
+        typingTimeout = setTimeout(() => {
+          setIsTyping(false);
+        }, 2000);
+      }
     });
 
     // check if the user is on waiting for to join
@@ -61,9 +82,12 @@ const Post = () => {
         },
         ...messages,
       ]);
+      setIsTyping(false);
     }
-    console.log("receive message");
   });
+
+  // get total strangers length
+  socket.on("total_waiting_strangers", (data) => {});
 
   const handleSendMessage = (e: any) => {
     e.preventDefault();
@@ -82,6 +106,12 @@ const Post = () => {
     if (!roomId) {
       socket.emit("join");
       setIsSearching(true);
+    } else if (roomId) {
+      socket.emit("leave", roomId);
+      setRoomId("");
+      setPartnerId("");
+      setMessages([]);
+      socket.emit("join");
     } else leaveRoom();
   };
 
@@ -92,6 +122,7 @@ const Post = () => {
       setIsWaiting(false);
       setIsSearching(false);
       setMessages([]);
+      setRoomId("");
     }
   };
 
@@ -127,17 +158,23 @@ const Post = () => {
           )}
           {/* conversation list */}
           <div className="h-full max-h-full flex flex-col-reverse px-2 py-2 gap-2 pb-10 overflow-y-auto">
+            {isTyping && <p className="px-3 py-1 text-slate-500">typing ...</p>}
             {messages.map((msg, idx) => {
               return (
                 <div
                   className={
                     msg.from == "stranger"
                       ? "px-3 py-1 rounded-lg bg-slate-800 text-slate-400 tracking-wide self-start mx-2 max-w-[80%] md:max-w-[60%]"
-                      : "px-3 py-1 rounded-lg bg-green-800 text-slate-300 tracking-wide self-end mx-2 max-w-[80%] md:max-w-[60%]"
+                      : "px-3 py-1 rounded-lg bg-green-800/50 text-slate-300 tracking-wide self-end mx-2 max-w-[80%] md:max-w-[60%]"
                   }
                   key={idx}
                 >
-                  {msg.message}
+                  {parse(
+                    msg.message.replace(
+                      /(([\w+]+\:\/\/)?([\w\d-]+\.)*[\w-]+[\.\:]\w+([\/\?\=\&\#]?[\w-]+)*\/?)/gm,
+                      `<a className="text-orange-500 underline underline-offset-1" href="$1">$1</a>`
+                    )
+                  )}
                 </div>
               );
             })}
@@ -156,12 +193,12 @@ const Post = () => {
               </p>
             )}
             {/* when client is searching but not on waiting list */}
-            {!isConnected && isWaiting && (
+            {!isConnected && isWaiting && !roomId && (
               <p className="mx-auto py-3 text-sm text-slate-300">
                 Looking for stranger ...
               </p>
             )}
-            {isConnected && (
+            {(isConnected || roomId) && (
               <p className="text-slate-600 text-xs">
                 You&apos;re now chatting with a random stranger.
               </p>
@@ -182,20 +219,24 @@ const Post = () => {
                 </Popover.Button>
                 <Popover.Panel className="absolute bottom-10 left-0 z-10">
                   <div className="rounded-lg bg-slate-800 shadow-lg ring-1 ring-black ring-opacity-5 flex flex-col items-start gap-4 w-fit py-2 px-3">
-                    <div
-                      onClick={startRoom}
-                      className="flex w-fit gap-3 justify-center items-center text-green-400 hover:text-green-400/50 cursor-pointer"
-                    >
-                      <p className="text-md text-lg">New</p>
-                      <PlusIcon className="w-5 h-5" />
-                    </div>
-                    <div
-                      onClick={leaveRoom}
-                      className="flex gap-3 justify-center items-center text-red-400 hover:text-red-400/50 cursor-pointer"
-                    >
-                      <p className="text-md text-lg">Leave</p>
-                      <ArrowRightOnRectangleIcon className="w-5 h-5" />
-                    </div>
+                    <Popover.Button>
+                      <div
+                        onClick={startRoom}
+                        className="flex w-fit gap-3 justify-center items-center text-green-400 hover:text-green-400/50 cursor-pointer"
+                      >
+                        <p className="text-md text-lg">New</p>
+                        <PlusIcon className="w-5 h-5" />
+                      </div>
+                    </Popover.Button>
+                    <Popover.Button>
+                      <div
+                        onClick={leaveRoom}
+                        className="flex gap-3 justify-center items-center text-red-400 hover:text-red-400/50 cursor-pointer"
+                      >
+                        <p className="text-md text-lg">Leave</p>
+                        <ArrowRightOnRectangleIcon className="w-5 h-5" />
+                      </div>
+                    </Popover.Button>
                   </div>
                 </Popover.Panel>
               </Popover>
