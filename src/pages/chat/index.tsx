@@ -175,7 +175,7 @@ const Post = () => {
                   {parse(
                     msg.message.replace(
                       /(([\w+]+\:\/\/)?([\w\d-]+\.)*[\w-]+[\.\:]\w+([\/\?\=\&\#]?[\w-]+)*\/?)/gm,
-                      `<a className="text-orange-500 underline underline-offset-1" href="$1">$1</a>`
+                      `<a className="text-orange-500 underline underline-offset-1" href="$1" target="_blank">$1</a>`
                     )
                   )}
                 </div>
