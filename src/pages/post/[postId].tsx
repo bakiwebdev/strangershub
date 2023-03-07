@@ -10,13 +10,13 @@ import {
 } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "../_app";
 import Link from "next/link";
 import Tippy from "@tippyjs/react";
 import Seo from "@/components/SEO";
+import parse from "html-react-parser";
 
 // get server side props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -198,7 +198,12 @@ const Post = (post: PostInterface) => {
             }}
             className="flex text-sm sm:text-base md:text-lg first-letter:capitalize whitespace-pre-wrap leading-normal tracking-wide"
           >
-            {postData.body}
+            {parse(
+              postData.body.replace(
+                /(([\w+]+\:\/\/)?([\w\d-]+\.)*[\w-]+[\.\:]\w+([\/\?\=\&\#]?[\w-]+)*\/?)/gm,
+                `<a className="text-orange-500 underline underline-offset-1" href="$1" target="_blank">$1</a>`
+              )
+            )}
           </pre>
         </div>
         {/* hash tag lists */}
