@@ -2,10 +2,10 @@ import Seo from "@/components/SEO";
 import { Popover } from "@headlessui/react";
 import parse from "html-react-parser";
 import {
+  ArrowPathIcon,
   ArrowRightOnRectangleIcon,
+  Cog6ToothIcon,
   PaperAirplaneIcon,
-  PlusIcon,
-  RectangleGroupIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
@@ -128,7 +128,10 @@ const Post = () => {
 
   return (
     <>
-      <Seo />
+      <Seo
+        title="Chat with Strangers - Anonymous Chat Room | www.strangershub.fun/chat"
+        description="Chat with strangers anonymously in our free chat room. Meet new people and make connections. Start Chatting Now!"
+      />
       {/* chat layout */}
       <section className="relative max-w-5xl flex flex-col h-screen max-h-screen overflow-hidden mx-0 md:mx-auto pt-20 pb-10">
         {/* Chat Section */}
@@ -214,24 +217,24 @@ const Post = () => {
           >
             <div className="flex justify-center items-center pr-2 border-r border-slate-500">
               <Popover className="relative">
-                <Popover.Button className="outline-none">
-                  <RectangleGroupIcon className="w-6 h-7 text-orange-500" />
+                <Popover.Button className="outline-none flex items-center">
+                  <Cog6ToothIcon className="w-6 h-7 text-orange-500" />
                 </Popover.Button>
                 <Popover.Panel className="absolute bottom-10 left-0 z-10">
                   <div className="rounded-lg bg-slate-800 shadow-lg ring-1 ring-black ring-opacity-5 flex flex-col items-start gap-4 w-fit py-2 px-3">
-                    <Popover.Button>
+                    <Popover.Button className="w-full">
                       <div
                         onClick={startRoom}
-                        className="flex w-fit gap-3 justify-center items-center text-green-400 hover:text-green-400/50 cursor-pointer"
+                        className="flex gap-3 justify-between items-center text-green-400 hover:text-green-400/50 cursor-pointer"
                       >
                         <p className="text-md text-lg">New</p>
-                        <PlusIcon className="w-5 h-5" />
+                        <ArrowPathIcon className="w-5 h-5" />
                       </div>
                     </Popover.Button>
-                    <Popover.Button>
+                    <Popover.Button className="w-full">
                       <div
                         onClick={leaveRoom}
-                        className="flex gap-3 justify-center items-center text-red-400 hover:text-red-400/50 cursor-pointer"
+                        className="flex gap-3 justify-between items-center text-red-400 hover:text-red-400/50 cursor-pointer"
                       >
                         <p className="text-md text-lg">Leave</p>
                         <ArrowRightOnRectangleIcon className="w-5 h-5" />
