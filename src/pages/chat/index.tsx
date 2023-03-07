@@ -129,7 +129,7 @@ const Post = () => {
   return (
     <>
       <Seo
-        title="Chat with Strangers - Anonymous Chat Room | www.strangershub.fun/chat"
+        title="Chat with Strangers - Anonymous Chat Room"
         description="Chat with strangers anonymously in our free chat room. Meet new people and make connections. Start Chatting Now!"
       />
       {/* chat layout */}
