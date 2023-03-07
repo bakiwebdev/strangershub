@@ -167,8 +167,8 @@ const Post = () => {
                 <div
                   className={
                     msg.from == "stranger"
-                      ? "px-3 py-1 rounded-lg bg-slate-800 text-slate-400 tracking-wide self-start mx-2 max-w-[80%] md:max-w-[60%]"
-                      : "px-3 py-1 rounded-lg bg-green-800/50 text-slate-300 tracking-wide self-end mx-2 max-w-[80%] md:max-w-[60%]"
+                      ? "px-3 py-1 rounded-lg bg-slate-800 text-slate-400 tracking-wide self-start mx-2 max-w-[80%] md:max-w-[60%] overflow-hidden"
+                      : "px-3 py-1 rounded-lg bg-green-800/50 text-slate-300 tracking-wide self-end mx-2 max-w-[80%] md:max-w-[60%] overflow-hidden"
                   }
                   key={idx}
                 >
