@@ -14,9 +14,15 @@ const Header = () => {
   return (
     <nav className="w-full mx-auto fixed top-0 right-0 bg-slate-900 z-30 py-2 px-4 duration-200 border-b border-gray-500">
       <div className="px-2 relative max-w-7xl mx-auto flex justify-between place-items-center py-1.5">
-        <Link href="/" className="flex w-fit gap-2">
-          <Image src={logo} alt="SH logo" width={50} height={50} />
-          <h3 className="text-xl mr-2 font-semibold ml-3 flex justify-center items-center gap-1">
+        <Link href="/" className="flex w-fit items-center gap-1 md:gap-2">
+          <Image
+            src={logo}
+            alt="SH logo"
+            width={40}
+            height={40}
+            className="h-9 w-9 md:h-10 md:w-10"
+          />
+          <h3 className="text-md md:text-xl mr-2 font-semibold ml-3 flex justify-center items-center gap-1">
             Strangers Hub
           </h3>
         </Link>
@@ -53,12 +59,15 @@ const Header = () => {
                   <div className="rounded-lg bg-slate-800 shadow-lg ring-1 ring-black ring-opacity-5">
                     <div className="px-5 pt-5 pb-6">
                       <div className="flex items-center justify-between">
-                        <Link href="/" className="flex items-center">
+                        <Link
+                          href="/"
+                          className="flex items-center outline-none"
+                        >
                           <Image
                             src={logo}
                             alt="SH logo"
-                            width={50}
-                            height={50}
+                            width={30}
+                            height={30}
                           />
                           <h3 className="text-md mr-2 font-semibold ml-3 flex justify-center items-center gap-1">
                             Strangers Hub

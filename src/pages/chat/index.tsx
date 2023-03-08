@@ -10,6 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
+import { connected } from "process";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const socket = io(baseUrl || "http://localhost:5000");
 
@@ -23,7 +24,6 @@ const Post = () => {
   const [message, setMessage] = useState<string>("");
   const [showWelcomeMessage, setShowWelcomeMessage] = useState<boolean>(true);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
-  const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
   const [partnerId, setPartnerId] = useState<string>("");
@@ -103,9 +103,9 @@ const Post = () => {
   };
 
   const startRoom = () => {
+    if (isWaiting) return;
     if (!roomId) {
       socket.emit("join");
-      setIsSearching(true);
     } else if (roomId) {
       socket.emit("leave", roomId);
       setRoomId("");
@@ -116,11 +116,10 @@ const Post = () => {
   };
 
   const leaveRoom = () => {
-    if (roomId) {
+    if (roomId || connected || isWaiting) {
       socket.emit("leave", roomId);
       setIsConnected(false);
       setIsWaiting(false);
-      setIsSearching(false);
       setMessages([]);
       setRoomId("");
     }
@@ -160,7 +159,7 @@ const Post = () => {
             </div>
           )}
           {/* conversation list */}
-          <div className="h-full flex flex-col-reverse px-2 py-2 gap-2 pb-10 overflow-scroll scroll">
+          <div className="h-full flex flex-col-reverse px-2 py-2 gap-2 pb-10 overflow-scroll no-scrollbar">
             {isTyping && <p className="px-3 py-1 text-slate-500">typing ...</p>}
             {messages.map((msg, idx) => {
               return (
@@ -184,7 +183,7 @@ const Post = () => {
               );
             })}
             <div className="absolute bottom-0 px-2 text-sm rounded-sm w-full flex">
-              {!isSearching && (
+              {!isWaiting && !isConnected && (
                 <p className="mx-auto py-3 text-sm text-slate-300">
                   <span
                     onClick={startRoom}
@@ -200,7 +199,7 @@ const Post = () => {
                   Looking for stranger ...
                 </p>
               )}
-              {(isConnected || roomId) && (
+              {isConnected && roomId && (
                 <p className="text-slate-600 text-xs">
                   You&apos;re now chatting with a random stranger.
                 </p>

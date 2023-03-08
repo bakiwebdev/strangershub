@@ -81,7 +81,6 @@ const Post = (post: PostInterface) => {
       .get(`${baseUrl}/api/v1/post/${postData.id}/like`)
       .then((res) => {
         setPostData({ ...postData, likes: res.data.likes });
-        console.log("like");
         queryClient.invalidateQueries({ queryKey: ["getPosts"] });
       });
   };
