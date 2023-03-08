@@ -160,52 +160,52 @@ const Post = () => {
             </div>
           )}
           {/* conversation list */}
-          <div className="h-full max-h-full flex flex-col-reverse px-2 py-2 gap-2 pb-10 overflow-y-auto">
+          <div className="h-full flex flex-col-reverse px-2 py-2 gap-2 pb-10 overflow-scroll scroll">
             {isTyping && <p className="px-3 py-1 text-slate-500">typing ...</p>}
             {messages.map((msg, idx) => {
               return (
                 <div
                   className={
                     msg.from == "stranger"
-                      ? "px-3 py-1 rounded-lg bg-slate-800 text-slate-400 tracking-wide self-start mx-2 max-w-[80%] md:max-w-[60%] overflow-hidden"
-                      : "px-3 py-1 rounded-lg bg-green-800/50 text-slate-300 tracking-wide self-end mx-2 max-w-[80%] md:max-w-[60%] overflow-hidden"
+                      ? "flex bg-slate-800 text-slate-400 self-start rounded-md mx-2 max-w-[80%]"
+                      : "flex bg-green-800/50 text-slate-300 self-end rounded-md mx-2 max-w-[80%]"
                   }
                   key={idx}
                 >
-                  {parse(
-                    msg.message.replace(
-                      /(([\w+]+\:\/\/)?([\w\d-]+\.)*[\w-]+[\.\:]\w+([\/\?\=\&\#]?[\w-]+)*\/?)/gm,
-                      `<a className="text-orange-500 underline underline-offset-1" href="$1" target="_blank">$1</a>`
-                    )
-                  )}
+                  <p className=" tracking-wide px-3 py-1 w-fit">
+                    {parse(
+                      msg.message.replace(
+                        /(([\w+]+\:\/\/)?([\w\d-]+\.)*[\w-]+[\.\:]\w+([\/\?\=\&\#]?[\w-]+)*\/?)/gm,
+                        '<span><a className="text-orange-500 underline underline-offset-1" href="$1" target="_blank">$1</a></span>'
+                      )
+                    )}
+                  </p>
                 </div>
               );
             })}
-          </div>
-          {/* event display area */}
-          <div className="absolute bottom-0 px-2 text-sm rounded-sm w-full flex">
-            {!isSearching && (
-              <p className="mx-auto py-3 text-sm text-slate-300">
-                <span
-                  onClick={startRoom}
-                  className="text-blue-400 underline cursor-pointer"
-                >
-                  Start chatting
-                </span>{" "}
-                with a strangers
-              </p>
-            )}
-            {/* when client is searching but not on waiting list */}
-            {!isConnected && isWaiting && !roomId && (
-              <p className="mx-auto py-3 text-sm text-slate-300">
-                Looking for stranger ...
-              </p>
-            )}
-            {(isConnected || roomId) && (
-              <p className="text-slate-600 text-xs">
-                You&apos;re now chatting with a random stranger.
-              </p>
-            )}
+            <div className="absolute bottom-0 px-2 text-sm rounded-sm w-full flex">
+              {!isSearching && (
+                <p className="mx-auto py-3 text-sm text-slate-300">
+                  <span
+                    onClick={startRoom}
+                    className="text-blue-400 underline cursor-pointer"
+                  >
+                    Start chatting
+                  </span>{" "}
+                  with a strangers
+                </p>
+              )}
+              {!isConnected && isWaiting && !roomId && (
+                <p className="mx-auto py-3 text-sm text-slate-300">
+                  Looking for stranger ...
+                </p>
+              )}
+              {(isConnected || roomId) && (
+                <p className="text-slate-600 text-xs">
+                  You&apos;re now chatting with a random stranger.
+                </p>
+              )}
+            </div>
           </div>
         </section>
         {/* message input area */}
