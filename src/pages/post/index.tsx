@@ -3,6 +3,7 @@ import PostFilter from "@/components/postFilter";
 import PostCard from "@/components/postCard";
 import PostCardSkeleton from "@/components/postCardSkeleton";
 import PostLayout from "@/components/postLayout";
+import { Variants, motion } from "framer-motion";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
@@ -29,10 +30,14 @@ const Post = () => {
     <>
       <Seo />
       <PostFilter />
-      <PostLayout>
-        {isLoading && cardSkeleton}
-        {isSuccess &&
-          data.posts.map((post: any) => {
+      {isLoading && (
+        <div className="max-w-7xl mx-auto pt-28 px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
+          {cardSkeleton}
+        </div>
+      )}
+      {isSuccess && (
+        <div className="max-w-7xl mx-auto pt-28 px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
+          {data.posts.map((post: any) => {
             return (
               <PostCard
                 key={post._id}
@@ -48,7 +53,8 @@ const Post = () => {
               />
             );
           })}
-      </PostLayout>
+        </div>
+      )}
     </>
   );
 };

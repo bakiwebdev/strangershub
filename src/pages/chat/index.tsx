@@ -9,10 +9,9 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
-import { connected } from "process";
+import io, { Socket } from "socket.io-client";
+import socket from "@/server/socket";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-const socket = io(baseUrl || "http://localhost:5000");
 
 interface MessageProps {
   message: string;
@@ -20,61 +19,52 @@ interface MessageProps {
 }
 
 const Post = () => {
+  // const [socket, setSocket] = useState<Socket | null>(null);
+  const [connected, setConnected] = useState<boolean>(false);
+  const [start, SetStart] = useState<boolean>(false);
+  const [waiting, setWaiting] = useState<boolean>(false);
+  const [joined, setJoined] = useState<boolean>(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [message, setMessage] = useState<string>("");
   const [showWelcomeMessage, setShowWelcomeMessage] = useState<boolean>(true);
-  const [isWaiting, setIsWaiting] = useState<boolean>(false);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
-  const [partnerId, setPartnerId] = useState<string>("");
+  const [strangerId, setStrangerId] = useState<string>("");
   const [isTyping, setIsTyping] = useState(false);
+  const [socketState, setSocketState] = useState("Establishing a server");
   let typingTimeout: any = null;
 
   useEffect(() => {
-    if (message && roomId) {
-      socket.emit("typing", { roomId });
-    }
-  }, [message, roomId]);
-
-  useEffect(() => {
-    // check if the user is on waiting for to join
-    socket.on("waiting", (data) => {
-      setIsWaiting(true);
-      setIsConnected(false);
+    // Initialize Socket.io instance
+    socket.on("connect", () => {
+      setConnected(true);
     });
 
-    socket.on("stranger_typing", (strangerId) => {
-      if (strangerId === partnerId) {
-        setIsTyping(true);
-        if (typingTimeout) {
-          clearTimeout(typingTimeout);
-        }
-        typingTimeout = setTimeout(() => {
-          setIsTyping(false);
-        }, 2000);
-      }
-    });
+    // Cleanup Socket.io instance
+    return () => {
+      socket.off("connect");
+    };
+  }, []);
 
-    // check if the user is on waiting for to join
-    socket.on("matched", (data) => {
-      setIsWaiting(false);
-      setIsConnected(true);
-      setRoomId(data.roomId);
-      setPartnerId(data.partnerId);
-    });
-    // partner disconnected
-    socket.on("partnerDisconnected", () => {
-      socket.emit("leave", roomId);
-      setMessages([]);
-      setRoomId("");
-      socket.emit("join");
-      setIsWaiting(true);
-    });
-  }, [messages, partnerId, roomId]);
+  // when disconnect
+  socket.on("disconnect", () => {
+    setConnected(false);
+  });
 
-  // on receive message
+  // when matched
+  socket.on("matched", (data) => {
+    setSocketState("Connected");
+    setJoined(true);
+    setWaiting(false);
+    setRoomId(data.roomId);
+    setStrangerId(data.strangerId);
+  });
+
+  // when message receive
   socket.on("receive_message", (data) => {
-    if (partnerId === data.from) {
+    console.log(strangerId, " and ", data.from);
+    if (strangerId === data.from) {
+      // remove typing indicator if exist
+      setIsTyping(false);
       setMessages([
         {
           message: data.message,
@@ -82,47 +72,118 @@ const Post = () => {
         },
         ...messages,
       ]);
-      setIsTyping(false);
     }
   });
 
+  // when partner disconnected
+  socket.on("partnerDisconnected", () => {
+    console.log("partner disconnected");
+    socket.emit("leave", roomId);
+    setMessages([]);
+    setRoomId("");
+    setSocketState("Waiting for a stranger to join");
+    socket.emit("join");
+  });
+
+  // when typing
+  socket.on("stranger_typing", (strangerId) => {
+    if (strangerId === strangerId) {
+      setIsTyping(true);
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+      typingTimeout = setTimeout(() => {
+        setIsTyping(false);
+      }, 2000);
+    }
+  });
+
+  // when waiting is changed
+  useEffect(() => {
+    if (socket && connected) {
+      if (start) {
+        socket.emit("join");
+        setSocketState("Waiting for a stranger to join");
+      }
+      if (socketState === "Connected") {
+        socket.emit("leave", roomId);
+      }
+    }
+
+    return () => {
+      if (socket && connected && socketState === "Connected") {
+        socket.emit("leave", roomId);
+      }
+    };
+  }, [start]);
+
+  // when message is updated
+  useEffect(() => {
+    console.log("messages: ", messages);
+  }, [messages]);
+
+  useEffect(() => {
+    if (socket && connected && message && roomId) {
+      socket?.emit("typing", { roomId });
+    }
+  }, [message, roomId, socket, connected]);
+
+  // on receive message
+  // socket?.on("receive_message", (data) => {
+  //   if (strangerId === data.from) {
+  //     setMessages([
+  //       {
+  //         message: data.message,
+  //         from: "stranger",
+  //       },
+  //       ...messages,
+  //     ]);
+  //     setIsTyping(false);
+  //   }
+  // });
+
   // get total strangers length
-  socket.on("total_waiting_strangers", (data) => {});
+  // socket?.on("total_waiting_strangers", (data) => {});
 
   const handleSendMessage = (e: any) => {
     e.preventDefault();
-    setMessages([
-      {
-        message,
-        from: "you",
-      },
-      ...messages,
-    ]);
-    socket.emit("send_message", { roomId, message });
+    joined &&
+      setMessages([
+        {
+          message,
+          from: "you",
+        },
+        ...messages,
+      ]);
+    socket?.emit("send_message", { roomId, message });
     setMessage("");
   };
 
   const startRoom = () => {
-    if (isWaiting) return;
-    if (!roomId) {
-      socket.emit("join");
-    } else if (roomId) {
-      socket.emit("leave", roomId);
-      setRoomId("");
-      setPartnerId("");
-      setMessages([]);
-      socket.emit("join");
-    } else leaveRoom();
+    setWaiting(true);
+    // if (waiting) return;
+    // if (!roomId) {
+    //   socket?.emit("join");
+    // } else if (roomId) {
+    //   socket?.emit("leave", roomId);
+    //   setRoomId("");
+    //   setStrangerId("");
+    //   setMessages([]);
+    //   socket?.emit("join");
+    // } else leaveRoom();
   };
 
   const leaveRoom = () => {
-    if (roomId || connected || isWaiting) {
-      socket.emit("leave", roomId);
-      setIsConnected(false);
-      setIsWaiting(false);
-      setMessages([]);
-      setRoomId("");
-    }
+    SetStart(false);
+    setMessages([]);
+    setJoined(false);
+    // if (roomId || connected || waiting) {
+    //   socket?.emit("leave", roomId);
+    //   setIsConnected(false);
+    //   setWaiting(false);
+    //   setMessages([]);
+    //   setRoomId("");
+    // }
   };
 
   return (
@@ -183,26 +244,16 @@ const Post = () => {
               );
             })}
             <div className="absolute bottom-0 px-2 text-sm rounded-sm w-full flex">
-              {!isWaiting && !isConnected && (
-                <p className="mx-auto py-3 text-sm text-slate-300">
-                  <span
-                    onClick={startRoom}
-                    className="text-blue-400 underline cursor-pointer"
-                  >
-                    Start chatting
-                  </span>{" "}
-                  with a strangers
+              {!start && (
+                <p
+                  onClick={() => SetStart(true)}
+                  className="cursor-pointer mx-auto tracking-wide py-2 text-sm text-slate-400 px-3 rounded-md border border-green-500/50 mb-4"
+                >
+                  Start Chatting
                 </p>
               )}
-              {!isConnected && isWaiting && !roomId && (
-                <p className="mx-auto py-3 text-sm text-slate-300">
-                  Looking for stranger ...
-                </p>
-              )}
-              {isConnected && roomId && (
-                <p className="text-slate-600 text-xs">
-                  You&apos;re now chatting with a random stranger.
-                </p>
+              {start && (
+                <p className="text-slate-500/50 text-xs">{socketState}</p>
               )}
             </div>
           </div>
