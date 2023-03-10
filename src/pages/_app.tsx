@@ -8,6 +8,8 @@ import "tippy.js/dist/tippy.css";
 import Router from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import { Provider } from "react-redux";
+import { store } from "@/store";
 NProgress.configure({ showSpinner: false });
 Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
@@ -39,11 +41,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
       <QueryClientProvider client={queryClient}>
         <AnimatePresence>
-          {/* <Provider store={store}> */}
-          <Header />
-          <Component {...pageProps} />
-          {/* <Footer /> */}
-          {/* </Provider> */}
+          <Provider store={store}>
+            <Header />
+            <Component {...pageProps} />
+            {/* <Footer /> */}
+          </Provider>
         </AnimatePresence>
       </QueryClientProvider>
     </>

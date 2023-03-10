@@ -8,6 +8,7 @@ export interface PostInterface {
   dislikes: number;
   hashtags: string[];
   color: string;
+  totalComments: number;
 }
 
 interface CommentInterface {

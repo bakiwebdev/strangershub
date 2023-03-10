@@ -32,10 +32,10 @@ const Post = () => {
       <PostLayout>
         {isLoading && cardSkeleton}
         {isSuccess &&
-          data.posts.map((post: any) => {
+          data.posts.map((post: any, idx: number) => {
             return (
               <PostCard
-                key={post._id}
+                key={post._id + idx}
                 id={post._id}
                 date={post.date}
                 time={post.time}
@@ -45,6 +45,7 @@ const Post = () => {
                 dislikes={post.dislikes}
                 hashtags={post.hashtags}
                 color={post.color}
+                totalComments={post.totalComments}
               />
             );
           })}

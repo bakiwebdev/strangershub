@@ -5,12 +5,22 @@ import {
   ShareIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
+import {
+  HandThumbDownIcon as HandThumbDownIconSolid,
+  HeartIcon as HeartIconSolid,
+} from "@heroicons/react/24/solid";
 import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Tippy from "@tippyjs/react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  dislikePost,
+  likePost,
+  selectPostItems,
+} from "@/store/slices/postSlice";
 
 const PostCard = ({
   id,
@@ -21,14 +31,17 @@ const PostCard = ({
   likes,
   dislikes,
   color,
+  totalComments,
 }: PostInterface) => {
+  const postItems = useSelector(selectPostItems);
+  const dispatch = useDispatch();
   const commentArea = "comment-input-area";
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const [postLikes, setPostLikes] = useState<number>(likes);
   const [postDislikes, setPostDislikes] = useState<number>(dislikes);
-  const [commentLength, setCommentLength] = useState<number>(0);
-
   const [isCopied, setIsCopied] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDisliked, setIsDisliked] = useState(false);
 
   const handleCopyUrl = () => {
     const currentUrl = window.location.href;
@@ -41,23 +54,51 @@ const PostCard = ({
 
   // handle like button
   const handleLikeButton = async () => {
-    await axios.get(`${baseUrl}/api/v1/post/${id}/like`).then((res) => {
-      setPostLikes(res.data.likes as number);
-    });
+    !isLiked &&
+      (await axios
+        .get(`${baseUrl}/api/v1/post/${id}/like`)
+        .then((res) => {
+          setPostLikes(res.data.likes as number);
+          dispatch(likePost(id));
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 429) {
+            alert(
+              "So many requests. Please wait a few minutes before trying again."
+            );
+          } else {
+            alert("Oops, something went wrong. Please try again later.");
+          }
+        }));
   };
 
   // handle dislike button
   const handleDislikeButton = async () => {
-    await axios.get(`${baseUrl}/api/v1/post/${id}/dislike`).then((res) => {
-      setPostDislikes(res.data.dislikes);
-    });
+    !isDisliked &&
+      (await axios
+        .get(`${baseUrl}/api/v1/post/${id}/dislike`)
+        .then((res) => {
+          setPostDislikes(res.data.dislikes);
+          dispatch(dislikePost(id));
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 429) {
+            alert(
+              "So many requests. Please wait a few minutes before trying again."
+            );
+          } else {
+            alert("Oops, something went wrong. Please try again later.");
+          }
+        }));
   };
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}/api/v1/post/${id}/comment?page1&limit=1`)
-      .then((res) => setCommentLength(res.data.total));
-  }, [baseUrl, id]);
+    const post = postItems.find((p: any) => p.id === id);
+    if (post) {
+      setIsLiked(post.like);
+      setIsDisliked(post.dislike);
+    }
+  }, [id, postItems]);
 
   return (
     <motion.div
@@ -107,7 +148,11 @@ const PostCard = ({
         >
           <Tippy content={<span>Like</span>}>
             <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-red-500/10 transform transition-all ease-in-out duration-500">
-              <HeartIcon className="w-4 h-4" />
+              {isLiked ? (
+                <HeartIconSolid className="w-4 h-4" />
+              ) : (
+                <HeartIcon className="w-4 h-4" />
+              )}
             </div>
           </Tippy>
           <p className="font-mono text-xs font-light">{postLikes}</p>
@@ -115,11 +160,15 @@ const PostCard = ({
         {/* thumbs down icon */}
         <div
           onClick={handleDislikeButton}
-          className="group flex gap-1 text-orange-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+          className="group flex gap-1 text-orange-500  transform transition-all ease-in-out duration-500 items-center cursor-pointer"
         >
           <Tippy content={<span>Dislike</span>}>
             <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-orange-500/10 transform transition-all ease-in-out duration-500">
-              <HandThumbDownIcon className="w-4 h-4" />
+              {isDisliked ? (
+                <HandThumbDownIconSolid className="w-4 h-4" />
+              ) : (
+                <HandThumbDownIcon className="w-4 h-4" />
+              )}
             </div>
           </Tippy>
           <p className="font-mono text-xs font-light">{postDislikes}</p>
@@ -134,7 +183,7 @@ const PostCard = ({
               <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4" />
             </div>
           </Tippy>
-          <p className="font-mono text-xs font-light">{commentLength}</p>
+          <p className="font-mono text-xs font-light">{totalComments}</p>
         </Link>
         {/* share icon */}
         <div
