@@ -184,14 +184,11 @@ const Post = () => {
             })}
             <div className="absolute bottom-0 px-2 text-sm rounded-sm w-full flex">
               {!isWaiting && !isConnected && (
-                <p className="mx-auto py-3 text-sm text-slate-300">
-                  <span
-                    onClick={startRoom}
-                    className="text-blue-400 underline cursor-pointer"
-                  >
-                    Start chatting
-                  </span>{" "}
-                  with a strangers
+                <p
+                  onClick={startRoom}
+                  className="cursor-pointer mx-auto tracking-wide py-2 text-sm text-slate-400 px-3 rounded-md border border-green-500/50 mb-4"
+                >
+                  Start Chatting
                 </p>
               )}
               {!isConnected && isWaiting && !roomId && (
