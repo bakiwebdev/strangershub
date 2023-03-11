@@ -23,9 +23,9 @@ const Post = () => {
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const [matched, setMatched] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
-  const [strangerId, setStrangerId] = useState<string>("");
   const [isTyping, setIsTyping] = useState(false);
   let typingTimeout: any = null;
+  let strangerId = "";
 
   const resetDefaultState = () => {
     setStart(true);
@@ -34,7 +34,7 @@ const Post = () => {
     setIsWaiting(false);
     setMatched(false);
     setRoomId("");
-    setStrangerId("");
+    strangerId = "";
   };
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const Post = () => {
       setIsWaiting(false);
       setMatched(true); // => matched with stranger
       setRoomId(data.roomId); // => set room id
-      setStrangerId(data.strangerId); // => set stranger id
+      strangerId = data.strangerId; // => set stranger id
     }
 
     function onTyping(data: any) {
@@ -78,11 +78,12 @@ const Post = () => {
       // reset state like isMatched, roomId, strangersId
       setMatched(false);
       setRoomId("");
-      setStrangerId("");
+      strangerId = "";
       setMessages([]);
     }
 
     function onMessage(data: any) {
+      console.log(data.from);
       if (strangerId == data.from) {
         console.log("message received ", data.message);
         setMessages((prevState) => [
@@ -151,6 +152,7 @@ const Post = () => {
       setRoomId("");
       socket.emit("leaveRoom", roomId);
       socket.emit("join");
+      setMatched(false);
       setIsWaiting(true);
       setMessages([]);
       setMessage("");

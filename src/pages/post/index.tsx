@@ -3,7 +3,6 @@ import PostFilter from "@/components/postFilter";
 import PostCard from "@/components/postCard";
 import PostCardSkeleton from "@/components/postCardSkeleton";
 import PostLayout from "@/components/postLayout";
-import { Variants, motion } from "framer-motion";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
@@ -50,8 +49,7 @@ const Post = () => {
               />
             );
           })}
-        </div>
-      )}
+      </PostLayout>
     </>
   );
 };
