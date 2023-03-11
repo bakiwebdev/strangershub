@@ -111,6 +111,8 @@ const Post = () => {
       socket.off("waiting", onWaiting);
       socket.off("matched", onMatched);
       socket.off("typing", onTyping);
+      socket.off("strangerDisconnected", onStrangerDisconnected);
+      socket.off("receive_message", onMessage);
       // socket.off("foo", onFooEvent);
     };
   }, []);
