@@ -9,9 +9,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import io, { Socket } from "socket.io-client";
 import socket from "@/server/socket";
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 interface MessageProps {
   message: string;
@@ -19,171 +17,48 @@ interface MessageProps {
 }
 
 const Post = () => {
-  // const [socket, setSocket] = useState<Socket | null>(null);
   const [connected, setConnected] = useState<boolean>(false);
-  const [start, SetStart] = useState<boolean>(false);
-  const [waiting, setWaiting] = useState<boolean>(false);
-  const [joined, setJoined] = useState<boolean>(false);
+  const [start, setStart] = useState<boolean>(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [showWelcomeMessage, setShowWelcomeMessage] = useState<boolean>(true);
+  const [isWaiting, setIsWaiting] = useState<boolean>(false);
+  const [joined, setJoined] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
   const [strangerId, setStrangerId] = useState<string>("");
   const [isTyping, setIsTyping] = useState(false);
-  const [socketState, setSocketState] = useState("Establishing a server");
   let typingTimeout: any = null;
 
   useEffect(() => {
-    // Initialize Socket.io instance
-    socket.on("connect", () => {
-      setConnected(true);
-    });
-
-    // Cleanup Socket.io instance
     return () => {
+      socket.disconnect();
       socket.off("connect");
     };
   }, []);
 
-  // when disconnect
-  socket.on("disconnect", () => {
-    setConnected(false);
-  });
-
-  // when matched
-  socket.on("matched", (data) => {
-    setSocketState("Connected");
-    setJoined(true);
-    setWaiting(false);
-    setRoomId(data.roomId);
-    setStrangerId(data.strangerId);
-  });
-
-  // when message receive
-  socket.on("receive_message", (data) => {
-    console.log(strangerId, " and ", data.from);
-    if (strangerId === data.from) {
-      // remove typing indicator if exist
-      setIsTyping(false);
-      setMessages([
-        {
-          message: data.message,
-          from: "stranger",
-        },
-        ...messages,
-      ]);
-    }
-  });
-
-  // when partner disconnected
-  socket.on("partnerDisconnected", () => {
-    console.log("partner disconnected");
-    socket.emit("leave", roomId);
-    setMessages([]);
-    setRoomId("");
-    setSocketState("Waiting for a stranger to join");
-    socket.emit("join");
-  });
-
-  // when typing
-  socket.on("stranger_typing", (strangerId) => {
-    if (strangerId === strangerId) {
-      setIsTyping(true);
-      if (typingTimeout) {
-        clearTimeout(typingTimeout);
-      }
-      typingTimeout = setTimeout(() => {
-        setIsTyping(false);
-      }, 2000);
-    }
-  });
-
-  // when waiting is changed
-  useEffect(() => {
-    if (socket && connected) {
-      if (start) {
-        socket.emit("join");
-        setSocketState("Waiting for a stranger to join");
-      }
-      if (socketState === "Connected") {
-        socket.emit("leave", roomId);
-      }
-    }
-
-    return () => {
-      if (socket && connected && socketState === "Connected") {
-        socket.emit("leave", roomId);
-      }
-    };
-  }, [start]);
-
-  // when message is updated
-  useEffect(() => {
-    console.log("messages: ", messages);
-  }, [messages]);
-
-  useEffect(() => {
-    if (socket && connected && message && roomId) {
-      socket?.emit("typing", { roomId });
-    }
-  }, [message, roomId, socket, connected]);
-
-  // on receive message
-  // socket?.on("receive_message", (data) => {
-  //   if (strangerId === data.from) {
-  //     setMessages([
-  //       {
-  //         message: data.message,
-  //         from: "stranger",
-  //       },
-  //       ...messages,
-  //     ]);
-  //     setIsTyping(false);
-  //   }
-  // });
-
-  // get total strangers length
-  // socket?.on("total_waiting_strangers", (data) => {});
-
   const handleSendMessage = (e: any) => {
     e.preventDefault();
-    joined &&
-      setMessages([
-        {
-          message,
-          from: "you",
-        },
-        ...messages,
-      ]);
-    socket?.emit("send_message", { roomId, message });
-    setMessage("");
+    setMessages([
+      {
+        message,
+        from: "you",
+      },
+      ...messages,
+    ]);
+    socket.emit("send_message", { roomId, message });
   };
 
-  const startRoom = () => {
-    setWaiting(true);
-    // if (waiting) return;
-    // if (!roomId) {
-    //   socket?.emit("join");
-    // } else if (roomId) {
-    //   socket?.emit("leave", roomId);
-    //   setRoomId("");
-    //   setStrangerId("");
-    //   setMessages([]);
-    //   socket?.emit("join");
-    // } else leaveRoom();
+  const startChatting = () => {
+    setStart(true);
   };
 
   const leaveRoom = () => {
-    SetStart(false);
-    setMessages([]);
-    setJoined(false);
-    // if (roomId || connected || waiting) {
-    //   socket?.emit("leave", roomId);
-    //   setIsConnected(false);
-    //   setWaiting(false);
-    //   setMessages([]);
-    //   setRoomId("");
-    // }
+    if (roomId || connected || isWaiting) {
+      socket.emit("leave", roomId);
+      setJoined(false);
+      setIsWaiting(false);
+      setMessages([]);
+      setRoomId("");
+    }
   };
 
   return (
@@ -197,18 +72,12 @@ const Post = () => {
         {/* Chat Section */}
         <section className="relative border-b border-slate-600 rounded-md flex-1 w-full max-h-full overflow-hidden">
           {/* welcome message */}
-          {showWelcomeMessage && (
+          {!start && (
             <div className="fixed z-10 w-full max-w-5xl h-fit flex flex-col gap-2 px-2 md:px-10 py-2 bg-gradient-to-r from-green-500/10 to-slate-900">
               <div className="flex justify-between">
                 <h3 className="text-green-500 text-sm md:text-base">
                   Welcome to Strangers Hub Live Chat
                 </h3>
-
-                <XMarkIcon
-                  onClick={() => setShowWelcomeMessage(false)}
-                  className="h-6 w-6 text-orange-500 cursor-pointer"
-                  aria-hidden="true"
-                />
               </div>
               <p className="text-xs md:text-sm text-green-300/80 tracking-wide">
                 Welcome to our anonymous live chat where you can connect with
@@ -246,14 +115,21 @@ const Post = () => {
             <div className="absolute bottom-0 px-2 text-sm rounded-sm w-full flex">
               {!start && (
                 <p
-                  onClick={() => SetStart(true)}
+                  onClick={startChatting}
                   className="cursor-pointer mx-auto tracking-wide py-2 text-sm text-slate-400 px-3 rounded-md border border-green-500/50 mb-4"
                 >
                   Start Chatting
                 </p>
               )}
-              {start && (
-                <p className="text-slate-500/50 text-xs">{socketState}</p>
+              {!joined && isWaiting && !roomId && (
+                <p className="mx-auto py-3 text-sm text-slate-300">
+                  Looking for stranger ...
+                </p>
+              )}
+              {connected && joined && roomId && strangerId && (
+                <p className="text-slate-600 text-xs">
+                  You&apos;re now chatting with a random stranger.
+                </p>
               )}
             </div>
           </div>
@@ -274,7 +150,7 @@ const Post = () => {
                   <div className="rounded-lg bg-slate-800 shadow-lg ring-1 ring-black ring-opacity-5 flex flex-col items-start gap-4 w-fit py-2 px-3">
                     <Popover.Button className="w-full">
                       <div
-                        onClick={startRoom}
+                        onClick={startChatting}
                         className="flex gap-3 justify-between items-center text-green-400 hover:text-green-400/50 cursor-pointer"
                       >
                         <p className="text-md text-lg">New</p>
