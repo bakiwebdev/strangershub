@@ -30,17 +30,13 @@ const Post = () => {
     <>
       <Seo />
       <PostFilter />
-      {isLoading && (
-        <div className="max-w-7xl mx-auto pt-28 px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
-          {cardSkeleton}
-        </div>
-      )}
-      {isSuccess && (
-        <div className="max-w-7xl mx-auto pt-28 px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
-          {data.posts.map((post: any) => {
+      <PostLayout>
+        {isLoading && cardSkeleton}
+        {isSuccess &&
+          data.posts.map((post: any, idx: number) => {
             return (
               <PostCard
-                key={post._id}
+                key={post._id + idx}
                 id={post._id}
                 date={post.date}
                 time={post.time}
@@ -50,6 +46,7 @@ const Post = () => {
                 dislikes={post.dislikes}
                 hashtags={post.hashtags}
                 color={post.color}
+                totalComments={post.totalComments}
               />
             );
           })}

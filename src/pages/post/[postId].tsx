@@ -8,15 +8,25 @@ import {
   PaperAirplaneIcon,
   ShareIcon,
 } from "@heroicons/react/24/outline";
+import {
+  HandThumbDownIcon as HandThumbDownIconSolid,
+  HeartIcon as HeartIconSolid,
+} from "@heroicons/react/24/solid";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "../_app";
 import Link from "next/link";
 import Tippy from "@tippyjs/react";
 import Seo from "@/components/SEO";
 import parse from "html-react-parser";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  dislikePost,
+  likePost,
+  selectPostItems,
+} from "@/store/slices/postSlice";
 
 // get server side props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -51,6 +61,18 @@ const Post = (post: PostInterface) => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const [postData, setPostData] = useState<PostInterface>(post);
   const [comment, setComment] = useState<string>("");
+  const postItems = useSelector(selectPostItems);
+  const dispatch = useDispatch();
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDisliked, setIsDisliked] = useState(false);
+
+  useEffect(() => {
+    const data = postItems.find((p: any) => p.id === post.id);
+    if (data) {
+      setIsLiked(data.like);
+      setIsDisliked(data.dislike);
+    }
+  }, [post.id, postItems]);
 
   const [isCopied, setIsCopied] = useState(false);
 
@@ -77,22 +99,44 @@ const Post = (post: PostInterface) => {
 
   // handle like button
   const handleLikeButton = async () => {
-    await axios
-      .get(`${baseUrl}/api/v1/post/${postData.id}/like`)
-      .then((res) => {
-        setPostData({ ...postData, likes: res.data.likes });
-        queryClient.invalidateQueries({ queryKey: ["getPosts"] });
-      });
+    !isLiked &&
+      (await axios
+        .get(`${baseUrl}/api/v1/post/${postData.id}/like`)
+        .then((res) => {
+          setPostData({ ...postData, likes: res.data.likes });
+          dispatch(likePost(post.id));
+          queryClient.invalidateQueries({ queryKey: ["getPosts"] });
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 429) {
+            alert(
+              "So many requests. Please wait a few minutes before trying again."
+            );
+          } else {
+            alert("Oops, something went wrong. Please try again later.");
+          }
+        }));
   };
 
   // handle dislike button
   const handleDislikeButton = async () => {
-    await axios
-      .get(`${baseUrl}/api/v1/post/${postData.id}/dislike`)
-      .then((res) => {
-        setPostData({ ...postData, dislikes: res.data.dislikes });
-        queryClient.invalidateQueries({ queryKey: ["getPosts"] });
-      });
+    !isDisliked &&
+      (await axios
+        .get(`${baseUrl}/api/v1/post/${postData.id}/dislike`)
+        .then((res) => {
+          setPostData({ ...postData, dislikes: res.data.dislikes });
+          queryClient.invalidateQueries({ queryKey: ["getPosts"] });
+          dispatch(dislikePost(post.id));
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 429) {
+            alert(
+              "So many requests. Please wait a few minutes before trying again."
+            );
+          } else {
+            alert("Oops, something went wrong. Please try again later.");
+          }
+        }));
   };
 
   // Queries
@@ -142,7 +186,11 @@ const Post = (post: PostInterface) => {
             >
               <Tippy content={<span>{"Like"}</span>} inertia={true}>
                 <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-red-500/10 transform transition-all ease-in-out duration-500">
-                  <HeartIcon className="w-4 h-4" />
+                  {isLiked ? (
+                    <HeartIconSolid className="w-4 h-4" />
+                  ) : (
+                    <HeartIcon className="w-4 h-4" />
+                  )}
                 </div>
               </Tippy>
               <p className="font-mono text-xs font-light">{postData.likes}</p>
@@ -154,7 +202,11 @@ const Post = (post: PostInterface) => {
             >
               <Tippy content={<span>{"Dislike"}</span>} inertia={true}>
                 <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-orange-500/10 transform transition-all ease-in-out duration-500">
-                  <HandThumbDownIcon className="w-4 h-4" />
+                  {isDisliked ? (
+                    <HandThumbDownIconSolid className="w-4 h-4" />
+                  ) : (
+                    <HandThumbDownIcon className="w-4 h-4" />
+                  )}
                 </div>
               </Tippy>
               <p className="font-mono text-xs font-light">
