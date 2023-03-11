@@ -6,13 +6,9 @@ import {
   ArrowRightOnRectangleIcon,
   Cog6ToothIcon,
   PaperAirplaneIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
-import { connected } from "process";
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-const socket = io(baseUrl || "http://localhost:5000");
+import socket from "@/server/socket";
 
 interface MessageProps {
   message: string;
@@ -20,108 +16,154 @@ interface MessageProps {
 }
 
 const Post = () => {
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [start, setStart] = useState<boolean>(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [showWelcomeMessage, setShowWelcomeMessage] = useState<boolean>(true);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [matched, setMatched] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
-  const [partnerId, setPartnerId] = useState<string>("");
   const [isTyping, setIsTyping] = useState(false);
   let typingTimeout: any = null;
+  let strangerId = "";
+
+  const resetDefaultState = () => {
+    setStart(true);
+    setMessages([]);
+    setMessage("");
+    setIsWaiting(false);
+    setMatched(false);
+    setRoomId("");
+    strangerId = "";
+  };
 
   useEffect(() => {
-    if (message && roomId) {
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    function onWaiting() {
+      console.log("waiting ...");
+      setIsWaiting(true);
+    }
+
+    function onMatched(data: any) {
+      console.log("matched with ", data.strangerId);
+      console.log("on room ", data.roomId);
+      setIsWaiting(false);
+      setMatched(true); // => matched with stranger
+      setRoomId(data.roomId); // => set room id
+      strangerId = data.strangerId; // => set stranger id
+    }
+
+    function onTyping(data: any) {
+      console.log(data, " is typing ...");
+      setIsTyping(true);
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+      typingTimeout = setTimeout(() => {
+        setIsTyping(false);
+      }, 2000);
+    }
+
+    function onStrangerDisconnected() {
+      console.log("partner disconnected ");
+      socket.emit("leaveRoom", roomId); // => leave the room
+      socket.emit("join"); // => request for other chat automatically
+      // reset state like isMatched, roomId, strangersId
+      setMatched(false);
+      setRoomId("");
+      strangerId = "";
+      setMessages([]);
+    }
+
+    function onMessage(data: any) {
+      console.log(data.from);
+      if (strangerId == data.from) {
+        console.log("message received ", data.message);
+        setMessages((prevState) => [
+          {
+            message: data.message,
+            from: "stranger",
+          },
+          ...prevState,
+        ]);
+      }
+      setIsTyping(false);
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("waiting", onWaiting);
+    socket.on("matched", onMatched);
+    socket.on("typing", onTyping);
+    socket.on("strangerDisconnected", onStrangerDisconnected);
+    socket.on("receive_message", onMessage);
+    // socket.on("foo", onFooEvent);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("waiting", onWaiting);
+      socket.off("matched", onMatched);
+      socket.off("typing", onTyping);
+      socket.off("strangerDisconnected", onStrangerDisconnected);
+      socket.off("receive_message", onMessage);
+      // socket.off("foo", onFooEvent);
+    };
+  }, []);
+
+  // effect to emit when user is typing
+  useEffect(() => {
+    if (message) {
       socket.emit("typing", { roomId });
     }
   }, [message, roomId]);
 
-  useEffect(() => {
-    // check if the user is on waiting for to join
-    socket.on("waiting", (data) => {
-      setIsWaiting(true);
-      setIsConnected(false);
-    });
-
-    socket.on("stranger_typing", (strangerId) => {
-      if (strangerId === partnerId) {
-        setIsTyping(true);
-        if (typingTimeout) {
-          clearTimeout(typingTimeout);
-        }
-        typingTimeout = setTimeout(() => {
-          setIsTyping(false);
-        }, 2000);
-      }
-    });
-
-    // check if the user is on waiting for to join
-    socket.on("matched", (data) => {
-      setIsWaiting(false);
-      setIsConnected(true);
-      setRoomId(data.roomId);
-      setPartnerId(data.partnerId);
-    });
-    // partner disconnected
-    socket.on("partnerDisconnected", () => {
-      socket.emit("leave", roomId);
-      setMessages([]);
-      setRoomId("");
-      socket.emit("join");
-      setIsWaiting(true);
-    });
-  }, [messages, partnerId, roomId]);
-
-  // on receive message
-  socket.on("receive_message", (data) => {
-    if (partnerId === data.from) {
-      setMessages([
-        {
-          message: data.message,
-          from: "stranger",
-        },
-        ...messages,
-      ]);
-      setIsTyping(false);
-    }
-  });
-
-  // get total strangers length
-  socket.on("total_waiting_strangers", (data) => {});
-
   const handleSendMessage = (e: any) => {
     e.preventDefault();
-    setMessages([
+    setMessages((prevState) => [
       {
         message,
         from: "you",
       },
-      ...messages,
+      ...prevState,
     ]);
     socket.emit("send_message", { roomId, message });
     setMessage("");
   };
 
-  const startRoom = () => {
-    if (isWaiting) return;
-    if (!roomId) {
+  const startChatting = () => {
+    if (isConnected) {
+      console.log("send join request");
+      setStart(true);
       socket.emit("join");
-    } else if (roomId) {
-      socket.emit("leave", roomId);
+    }
+  };
+
+  const newChat = () => {
+    if (isConnected) {
+      console.log("new chat request");
       setRoomId("");
-      setPartnerId("");
-      setMessages([]);
+      socket.emit("leaveRoom", roomId);
       socket.emit("join");
-    } else leaveRoom();
+      setMatched(false);
+      setIsWaiting(true);
+      setMessages([]);
+      setMessage("");
+    }
   };
 
   const leaveRoom = () => {
-    if (roomId || connected || isWaiting) {
-      socket.emit("leave", roomId);
-      setIsConnected(false);
-      setIsWaiting(false);
-      setMessages([]);
-      setRoomId("");
+    if (isConnected) {
+      console.log("leaving a chat");
+      socket.emit("leaveRoom", roomId);
+      resetDefaultState();
     }
   };
 
@@ -136,18 +178,12 @@ const Post = () => {
         {/* Chat Section */}
         <section className="relative border-b border-slate-600 rounded-md flex-1 w-full max-h-full overflow-hidden">
           {/* welcome message */}
-          {showWelcomeMessage && (
+          {!start && (
             <div className="fixed z-10 w-full max-w-5xl h-fit flex flex-col gap-2 px-2 md:px-10 py-2 bg-gradient-to-r from-green-500/10 to-slate-900">
               <div className="flex justify-between">
                 <h3 className="text-green-500 text-sm md:text-base">
                   Welcome to Strangers Hub Live Chat
                 </h3>
-
-                <XMarkIcon
-                  onClick={() => setShowWelcomeMessage(false)}
-                  className="h-6 w-6 text-orange-500 cursor-pointer"
-                  aria-hidden="true"
-                />
               </div>
               <p className="text-xs md:text-sm text-green-300/80 tracking-wide">
                 Welcome to our anonymous live chat where you can connect with
@@ -183,22 +219,29 @@ const Post = () => {
               );
             })}
             <div className="absolute bottom-0 px-2 text-sm rounded-sm w-full flex">
-              {!isWaiting && !isConnected && (
+              {!start && (
                 <p
-                  onClick={startRoom}
+                  onClick={startChatting}
                   className="cursor-pointer mx-auto tracking-wide py-2 text-sm text-slate-400 px-3 rounded-md border border-green-500/50 mb-4"
                 >
                   Start Chatting
                 </p>
               )}
-              {!isConnected && isWaiting && !roomId && (
+              {/* connection indicator */}
+              <span
+                className={`absolute bottom-0 right-0 mx-5 my-3 ${
+                  isConnected ? "bg-green-700" : "bg-red-700"
+                } w-2 h-2 rounded-full`}
+              ></span>
+              {isConnected && isWaiting && (
                 <p className="mx-auto py-3 text-sm text-slate-300">
                   Looking for stranger ...
                 </p>
               )}
-              {isConnected && roomId && (
+              {isConnected && matched && (
                 <p className="text-slate-600 text-xs">
-                  You&apos;re now chatting with a random stranger.
+                  Connected with{" "}
+                  <span className="text-green-500">{strangerId}.</span>
                 </p>
               )}
             </div>
@@ -220,7 +263,7 @@ const Post = () => {
                   <div className="rounded-lg bg-slate-800 shadow-lg ring-1 ring-black ring-opacity-5 flex flex-col items-start gap-4 w-fit py-2 px-3">
                     <Popover.Button className="w-full">
                       <div
-                        onClick={startRoom}
+                        onClick={newChat}
                         className="flex gap-3 justify-between items-center text-green-400 hover:text-green-400/50 cursor-pointer"
                       >
                         <p className="text-md text-lg">New</p>

@@ -102,6 +102,8 @@ const PostCard = ({
 
   return (
     <motion.div
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
       whileHover={{ scale: 1.2, transition: { ease: "easeInOut" } }}
       whileTap={{ scale: 1.1, transition: { ease: "easeInOut" } }}
       style={{
