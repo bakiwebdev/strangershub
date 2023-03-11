@@ -83,7 +83,7 @@ const Post = () => {
     }
 
     function onMessage(data: any) {
-      if (strangerId === data.from) {
+      if (strangerId == data.from) {
         console.log("message received ", data.message);
         setMessages((prevState) => [
           {
@@ -140,6 +140,18 @@ const Post = () => {
       console.log("send join request");
       setStart(true);
       socket.emit("join");
+    }
+  };
+
+  const newChat = () => {
+    if (isConnected) {
+      console.log("new chat request");
+      setRoomId("");
+      socket.emit("leaveRoom", roomId);
+      socket.emit("join");
+      setIsWaiting(true);
+      setMessages([]);
+      setMessage("");
     }
   };
 
@@ -247,7 +259,7 @@ const Post = () => {
                   <div className="rounded-lg bg-slate-800 shadow-lg ring-1 ring-black ring-opacity-5 flex flex-col items-start gap-4 w-fit py-2 px-3">
                     <Popover.Button className="w-full">
                       <div
-                        onClick={startChatting}
+                        onClick={newChat}
                         className="flex gap-3 justify-between items-center text-green-400 hover:text-green-400/50 cursor-pointer"
                       >
                         <p className="text-md text-lg">New</p>
