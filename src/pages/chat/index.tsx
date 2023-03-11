@@ -6,7 +6,6 @@ import {
   ArrowRightOnRectangleIcon,
   Cog6ToothIcon,
   PaperAirplaneIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import socket from "@/server/socket";
@@ -17,47 +16,138 @@ interface MessageProps {
 }
 
 const Post = () => {
-  const [connected, setConnected] = useState<boolean>(false);
+  const [isConnected, setIsConnected] = useState(socket.connected);
   const [start, setStart] = useState<boolean>(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [message, setMessage] = useState<string>("");
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
-  const [joined, setJoined] = useState<boolean>(false);
+  const [matched, setMatched] = useState<boolean>(false);
   const [roomId, setRoomId] = useState<string>("");
   const [strangerId, setStrangerId] = useState<string>("");
   const [isTyping, setIsTyping] = useState(false);
   let typingTimeout: any = null;
 
+  const resetDefaultState = () => {
+    setStart(true);
+    setMessages([]);
+    setMessage("");
+    setIsWaiting(false);
+    setMatched(false);
+    setRoomId("");
+    setStrangerId("");
+  };
+
   useEffect(() => {
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    function onWaiting() {
+      console.log("waiting ...");
+      setIsWaiting(true);
+    }
+
+    function onMatched(data: any) {
+      console.log("matched with ", data.strangerId);
+      console.log("on room ", data.roomId);
+      setIsWaiting(false);
+      setMatched(true); // => matched with stranger
+      setRoomId(data.roomId); // => set room id
+      setStrangerId(data.strangerId); // => set stranger id
+    }
+
+    function onTyping(data: any) {
+      console.log(data, " is typing ...");
+      setIsTyping(true);
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+      typingTimeout = setTimeout(() => {
+        setIsTyping(false);
+      }, 2000);
+    }
+
+    function onStrangerDisconnected() {
+      console.log("partner disconnected ");
+      socket.emit("leaveRoom", roomId); // => leave the room
+      socket.emit("join"); // => request for other chat automatically
+      // reset state like isMatched, roomId, strangersId
+      setMatched(false);
+      setRoomId("");
+      setStrangerId("");
+      setMessages([]);
+    }
+
+    function onMessage(data: any) {
+      if (strangerId === data.from) {
+        console.log("message received ", data.message);
+        setMessages((prevState) => [
+          {
+            message: data.message,
+            from: "stranger",
+          },
+          ...prevState,
+        ]);
+      }
+      setIsTyping(false);
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("waiting", onWaiting);
+    socket.on("matched", onMatched);
+    socket.on("typing", onTyping);
+    socket.on("strangerDisconnected", onStrangerDisconnected);
+    socket.on("receive_message", onMessage);
+    // socket.on("foo", onFooEvent);
+
     return () => {
-      socket.disconnect();
-      socket.off("connect");
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("waiting", onWaiting);
+      socket.off("matched", onMatched);
+      socket.off("typing", onTyping);
+      // socket.off("foo", onFooEvent);
     };
   }, []);
 
+  // effect to emit when user is typing
+  useEffect(() => {
+    if (message) {
+      socket.emit("typing", { roomId });
+    }
+  }, [message, roomId]);
+
   const handleSendMessage = (e: any) => {
     e.preventDefault();
-    setMessages([
+    setMessages((prevState) => [
       {
         message,
         from: "you",
       },
-      ...messages,
+      ...prevState,
     ]);
     socket.emit("send_message", { roomId, message });
+    setMessage("");
   };
 
   const startChatting = () => {
-    setStart(true);
+    if (isConnected) {
+      console.log("send join request");
+      setStart(true);
+      socket.emit("join");
+    }
   };
 
   const leaveRoom = () => {
-    if (roomId || connected || isWaiting) {
-      socket.emit("leave", roomId);
-      setJoined(false);
-      setIsWaiting(false);
-      setMessages([]);
-      setRoomId("");
+    if (isConnected) {
+      console.log("leaving a chat");
+      socket.emit("leaveRoom", roomId);
+      resetDefaultState();
     }
   };
 
@@ -121,14 +211,21 @@ const Post = () => {
                   Start Chatting
                 </p>
               )}
-              {!joined && isWaiting && !roomId && (
+              {/* connection indicator */}
+              <span
+                className={`absolute bottom-0 right-0 mx-5 my-3 ${
+                  isConnected ? "bg-green-700" : "bg-red-700"
+                } w-2 h-2 rounded-full`}
+              ></span>
+              {isConnected && isWaiting && (
                 <p className="mx-auto py-3 text-sm text-slate-300">
                   Looking for stranger ...
                 </p>
               )}
-              {connected && joined && roomId && strangerId && (
+              {isConnected && matched && (
                 <p className="text-slate-600 text-xs">
-                  You&apos;re now chatting with a random stranger.
+                  Connected with{" "}
+                  <span className="text-green-500">{strangerId}.</span>
                 </p>
               )}
             </div>
