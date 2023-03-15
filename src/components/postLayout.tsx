@@ -15,7 +15,7 @@ const PostLayout = ({ children }: PostLayoutProps) => {
   return (
     <motion.div
       variants={containerVariants}
-      className="max-w-7xl mx-auto pt-28 px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10"
+      className="max-w-7xl mx-auto mt-10 px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10"
     >
       {children}
     </motion.div>
