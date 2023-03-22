@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import "../../../../utils/mongoose";
-import { fullTextSearchPosts } from "../../../../helper/post-helper";
+import "../../../utils/mongoose";
+import { fullTextSearchPosts } from "../../../helper/post-helper";
 
 type Data = {
   name: string;
