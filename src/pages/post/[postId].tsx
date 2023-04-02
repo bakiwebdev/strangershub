@@ -20,13 +20,13 @@ import { queryClient } from "../_app";
 import Link from "next/link";
 import Tippy from "@tippyjs/react";
 import Seo from "@/components/SEO";
-import parse from "html-react-parser";
 import { useDispatch, useSelector } from "react-redux";
 import {
   dislikePost,
   likePost,
   selectPostItems,
 } from "@/store/slices/postSlice";
+import { useRouter } from "next/router";
 
 // get server side props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -65,6 +65,7 @@ const Post = (post: PostInterface) => {
   const dispatch = useDispatch();
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const data = postItems.find((p: any) => p.id === post.id);
@@ -151,6 +152,14 @@ const Post = (post: PostInterface) => {
     },
   });
 
+  const handleBackClick = () => {
+    router.back();
+  };
+
+  const canGoBack = () => {
+    return router && router.asPath !== router.route;
+  };
+
   return (
     <>
       <Seo
@@ -160,13 +169,15 @@ const Post = (post: PostInterface) => {
       />
       <section className="max-w-4xl mx-auto pt-28 px-4 sm:px-8 md:px-6 mb-10 flex flex-col gap-4 relative">
         {/* Back icon */}
-        <Link
-          href={"/post"}
-          className="flex gap-3 justify-center items-center w-fit float-left text-orange-500 px-4 py-2 rounded-full bg-orange-500/10 cursor-pointer hover:bg-orange-500/20 transition translate"
-        >
-          <ArrowLeftIcon className="w-5 h-5" />
-          <p className="text-sm">Back</p>
-        </Link>
+        {canGoBack() && (
+          <button
+            className="flex gap-3 justify-center items-center w-fit float-left text-orange-500 px-4 py-2 rounded-full bg-orange-500/10 cursor-pointer hover:bg-orange-500/20 transition translate"
+            onClick={handleBackClick}
+          >
+            <ArrowLeftIcon className="w-5 h-5" />
+            <p className="text-sm">Back</p>
+          </button>
+        )}
         {/* posted time zone & reaction*/}
         <div className="flex justify-between flex-wrap gap-2">
           {/* posted time */}
@@ -236,27 +247,18 @@ const Post = (post: PostInterface) => {
             style={{
               color: `#${postData.color}`,
             }}
-            className="font-semibold text-xl sm:text-2xl md:text-4xl first-letter:capitalize tracking-wider leading-snug"
+            className="w-full text-center font-semibold text-xl sm:text-2xl md:text-4xl first-letter:capitalize tracking-wider leading-snug"
           >
             {postData.title}
           </h3>
         </div>
-        {/* word body */}
-        <div className="flex justify-start">
-          <pre
-            style={{
-              color: `#${postData.color}`,
-            }}
-            className="flex text-sm sm:text-base md:text-lg first-letter:capitalize whitespace-pre-wrap leading-normal tracking-wide"
-          >
-            {parse(
-              postData.body.replace(
-                /(([\w+]+\:\/\/)?([\w\d-]+\.)*[\w-]+[\.\:]\w+([\/\?\=\&\#]?[\w-]+)*\/?)/gm,
-                `<a className="text-orange-500 underline underline-offset-1" href="$1" target="_blank">$1</a>`
-              )
-            )}
-          </pre>
-        </div>
+        {/* post body */}
+        <div
+          style={{
+            color: `#${postData.color}`,
+          }}
+          dangerouslySetInnerHTML={{ __html: postData.body }}
+        />
         {/* hash tag lists */}
         <div className="flex justify-start items-center my-4 rounded-full gap-2 flex-wrap">
           {postData.hashtags.map((hashtag, idx) => {

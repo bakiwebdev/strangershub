@@ -21,6 +21,7 @@ import {
   likePost,
   selectPostItems,
 } from "@/store/slices/postSlice";
+import { htmlToText } from "html-to-text";
 
 const PostCard = ({
   id,
@@ -138,7 +139,7 @@ const PostCard = ({
           }}
           className="my-2 bg-slate-900/20 py-2 px-3 rounded-lg multi-line-truncation max-h-[130px]"
         >
-          {body}
+          <div dangerouslySetInnerHTML={{ __html: body }} />
         </section>
       </Link>
       {/* like, dislike, comment */}
