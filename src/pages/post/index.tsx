@@ -1,5 +1,4 @@
 import Seo from "@/components/SEO";
-import PostFilter from "@/components/postFilter";
 import PostCard from "@/components/postCard";
 import PostCardSkeleton from "@/components/postCardSkeleton";
 import PostLayout from "@/components/postLayout";
@@ -11,8 +10,8 @@ import {
   PencilIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import InputModal from "@/components/InputModal";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Link from "next/link";
 
 const Post = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -180,15 +179,15 @@ const Post = () => {
           </button>
         </form>
         {/* post button */}
-        <button
-          onClick={() => setIsModalOpen(true)}
+        <Link
+          href={"/post/new"}
           className="flex justify-center items-center w-fit px-2 md:px-5 py-2 rounded-md text-slate-800 bg-orange-500 font-semibold"
         >
           <p className="hidden md:flex whitespace-nowrap">
             Have something to say ?
           </p>
           <PencilIcon className="w-7 h-7 block md:hidden" />
-        </button>
+        </Link>
       </div>
       <InfiniteScroll
         dataLength={posts.length}
@@ -223,17 +222,12 @@ const Post = () => {
             })}
         </PostLayout>
       </InfiniteScroll>
-      {/* post input modal */}
-      <InputModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-      />
       {/* scroll to the top button */}
       <button
         onClick={scrollToTop}
         className="fixed bg-orange-500 bottom-10 right-6 md:bottom-20 md:right-14 w-fit h-fit rounded-md z-40"
       >
-        <ArrowSmallUpIcon className="w-5 h-5 m-2 text-slate-800" />
+        <ArrowSmallUpIcon className="w-6 h-6 m-3 text-slate-800" />
       </button>
     </>
   );
