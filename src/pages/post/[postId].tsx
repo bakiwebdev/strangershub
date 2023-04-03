@@ -27,6 +27,7 @@ import {
   selectPostItems,
 } from "@/store/slices/postSlice";
 import { useRouter } from "next/router";
+import { convert } from "html-to-text";
 
 // get server side props
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -155,29 +156,23 @@ const Post = (post: PostInterface) => {
   const handleBackClick = () => {
     router.back();
   };
-
-  const canGoBack = () => {
-    return router && router.asPath !== router.route;
-  };
-
   return (
     <>
       <Seo
         date={`${postData.date} - ${postData.time}`}
         templateTitle={postData.title}
-        description={postData.body}
+        description={convert(postData.body, { wordwrap: 130 })}
       />
       <section className="max-w-4xl mx-auto pt-28 px-4 sm:px-8 md:px-6 mb-10 flex flex-col gap-4 relative">
         {/* Back icon */}
-        {canGoBack() && (
-          <button
-            className="flex gap-3 justify-center items-center w-fit float-left text-orange-500 px-4 py-2 rounded-full bg-orange-500/10 cursor-pointer hover:bg-orange-500/20 transition translate"
-            onClick={handleBackClick}
-          >
-            <ArrowLeftIcon className="w-5 h-5" />
-            <p className="text-sm">Back</p>
-          </button>
-        )}
+        <Link
+          href={"/post"}
+          className="flex gap-3 justify-center items-center w-fit float-left text-orange-500 px-4 py-2 rounded-full bg-orange-500/10 cursor-pointer hover:bg-orange-500/20 transition translate"
+          onClick={handleBackClick}
+        >
+          <ArrowLeftIcon className="w-5 h-5" />
+          <p className="text-sm">Back</p>
+        </Link>
         {/* posted time zone & reaction*/}
         <div className="flex justify-between flex-wrap gap-2">
           {/* posted time */}
