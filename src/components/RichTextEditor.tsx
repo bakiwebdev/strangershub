@@ -2,15 +2,15 @@ import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 
-// interface IReactQuillProps {
-//   theme?: string;
-//   value: string;
-//   onChange: (content: string) => void;
-//   placeholder?: string;
-//   style?: React.CSSProperties;
-// }
+interface IReactQuillProps {
+  theme?: string;
+  value: string;
+  onChange: (content: string) => void;
+  placeholder?: string;
+  style?: React.CSSProperties;
+}
 
-const ReactQuill = dynamic(() => import("react-quill"), {
+const ReactQuill = dynamic<IReactQuillProps>(() => import("react-quill"), {
   ssr: false,
 });
 
