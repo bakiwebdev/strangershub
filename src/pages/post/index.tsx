@@ -173,7 +173,7 @@ const Post = () => {
             type="text"
             placeholder="Search..."
           />
-          <div className="border border-slate-400 h-4 mx-1 md:mx-2"></div>
+          <div className="border border-slate-400 h-4 mx-1 md:mx-2" />
           <button className="flex justify-center items-center gap-2 md:gap-4 w-fit">
             <BarsArrowDownIcon className="w-5 h-5 text-orange-500" />
           </button>
