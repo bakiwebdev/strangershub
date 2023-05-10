@@ -1,9 +1,11 @@
 import { CommentProps, PostProps } from "../interfaces/Post";
 import Post from "../model/post";
 import Comment from "../model/comment";
+import { connectMongoDB } from "@/utils/mongoose";
 
 // Function to create a new Post document
 export const createPost = async (postData: PostProps) => {
+  await connectMongoDB();
   await Post.create(postData)
     .then((res) => {
       return res;
@@ -15,6 +17,7 @@ export const createPost = async (postData: PostProps) => {
 
 // Function to get all the Posts with pagination and limit
 export const getPosts = async (page: number, limit: number) => {
+  await connectMongoDB();
   const posts = await Post.aggregate([
     { $sort: { createdAt: -1 } },
     { $skip: (page - 1) * limit },
@@ -51,12 +54,14 @@ export const getPosts = async (page: number, limit: number) => {
 
 // Function to get a Post document by its ID
 export const getPostById = async (postId: string) => {
+  await connectMongoDB();
   const post = await Post.findById(postId, { comments: 0, __v: 0 }).lean();
   return post;
 };
 
 // Like Post
 export const likePost = async (postId: string) => {
+  await connectMongoDB();
   const post = await Post.findByIdAndUpdate(
     postId,
     { $inc: { likes: 1 } },
@@ -68,6 +73,7 @@ export const likePost = async (postId: string) => {
 
 // Dislike Post
 export const dislikePost = async (postId: string) => {
+  await connectMongoDB();
   const post = await Post.findByIdAndUpdate(
     postId,
     { $inc: { dislikes: 1 } },
@@ -79,6 +85,7 @@ export const dislikePost = async (postId: string) => {
 
 // Function to search for Post documents
 export const searchPosts = async (query: any) => {
+  await connectMongoDB();
   const posts = await Post.find(query).lean();
   return posts;
 };
@@ -89,6 +96,7 @@ export const fullTextSearchPosts = async (
   page: number = 1,
   limit: number = 10
 ) => {
+  await connectMongoDB();
   const skip = (page - 1) * limit;
   const [count, posts] = await Promise.all([
     Post.countDocuments({ $text: { $search: query } }),
@@ -112,6 +120,7 @@ export const getComments = async (
   page: number,
   limit: number
 ) => {
+  await connectMongoDB();
   const [comments, total] = await Promise.all([
     Comment.find({ post: postId })
       .sort({ createdAt: -1 })
@@ -125,6 +134,7 @@ export const getComments = async (
 
 // Function to add a new comment to a Post document
 export const addComment = async (postId: string, commentData: CommentProps) => {
+  await connectMongoDB();
   const post = await Post.findById(postId);
   if (!post) return null;
   const comment = await Comment.create({ ...commentData, post: post._id });

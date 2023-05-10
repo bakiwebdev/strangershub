@@ -3,14 +3,8 @@ import "../../../utils/mongoose";
 import rateLimit from "express-rate-limit";
 import moment from "moment";
 import {
-  addComment,
   createPost,
-  dislikePost,
-  fullTextSearchPosts,
-  getComments,
-  getPostById,
   getPosts,
-  likePost,
 } from "../../../helper/post-helper";
 import { PostInterface } from "@/Interface/PostInterface";
 
