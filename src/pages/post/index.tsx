@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Link from "next/link";
+import PostCardV2 from "@/components/PostCardV2";
 
 const Post = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -159,37 +160,15 @@ const Post = () => {
           "Join us today and let your voice be heard - without ever having to reveal your identity!"
         }
       />
-      <div className="flex justify-center items-center max-w-7xl mx-auto mt-28 px-10 gap-2">
-        {/* search size */}
-        <form
-          onSubmit={handleSubmit}
-          className="w-full px-5 py-3 rounded-md border border-orange-500/50 shadow-xl shadow-orange-500/20 flex justify-center items-center gap-2"
-        >
-          <MagnifyingGlassIcon className="w-5 h-5 text-slate-400" />
-          <input
-            className="bg-transparent w-32 outline-none md:mx-2 flex-1"
-            value={searchQuery}
-            onChange={handleChange}
-            type="text"
-            placeholder="Search..."
-          />
-          <div className="border border-slate-400 h-4 mx-1 md:mx-2"></div>
-          <button className="flex justify-center items-center gap-2 md:gap-4 w-fit">
-            <BarsArrowDownIcon className="w-5 h-5 text-orange-500" />
-          </button>
-        </form>
-        {/* post button */}
-        <Link
-          href={"/post/new"}
-          className="flex justify-center items-center w-fit px-2 md:px-5 py-2 rounded-md text-slate-800 bg-orange-500 font-semibold"
-        >
-          <p className="hidden md:flex whitespace-nowrap">
-            Have something to say ?
-          </p>
-          <PencilIcon className="w-7 h-7 block md:hidden" />
-        </Link>
-      </div>
-      <InfiniteScroll
+      <main className="container mx-auto grid grid-cols-4 h-screen max-w-7xl">
+        <div className="">gird 1</div>
+        <div className="bg-slate-800 bg-opacity-10 col-span-2 pt-40">
+          {/* post card layout */}
+          <PostCardV2 />
+        </div>
+        <div className="">gird 3</div>
+      </main>
+      {/* <InfiniteScroll
         dataLength={posts.length}
         next={fetchLatestPost}
         hasMore={hasMorePost}
@@ -205,30 +184,31 @@ const Post = () => {
           {isSuccess &&
             posts.map((post: any, idx: number) => {
               return (
-                <PostCard
-                  key={post._id + idx}
-                  id={post._id}
-                  date={post.date}
-                  time={post.time}
-                  title={post.title}
-                  body={post.body}
-                  likes={post.likes}
-                  dislikes={post.dislikes}
-                  hashtags={post.hashtags}
-                  color={post.color}
-                  totalComments={post.totalComments}
-                />
+                // <PostCard
+                //   key={post._id + idx}
+                //   id={post._id}
+                //   date={post.date}
+                //   time={post.time}
+                //   title={post.title}
+                //   body={post.body}
+                //   likes={post.likes}
+                //   dislikes={post.dislikes}
+                //   hashtags={post.hashtags}
+                //   color={post.color}
+                //   totalComments={post.totalComments}
+                // />
+                <PostCardV2 key={post._id + idx} />
               );
             })}
         </PostLayout>
-      </InfiniteScroll>
+      </InfiniteScroll> */}
       {/* scroll to the top button */}
-      <button
+      {/* <button
         onClick={scrollToTop}
         className="fixed bg-orange-500 bottom-10 right-6 md:bottom-20 md:right-14 w-fit h-fit rounded-md z-40"
       >
         <ArrowSmallUpIcon className="w-6 h-6 m-3 text-slate-800" />
-      </button>
+      </button> */}
     </>
   );
 };
