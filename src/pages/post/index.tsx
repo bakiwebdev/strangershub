@@ -160,7 +160,7 @@ const Post = () => {
           "Join us today and let your voice be heard - without ever having to reveal your identity!"
         }
       />
-      <main className="container mx-auto grid grid-cols-4 h-screen max-w-7xl">
+      <main className="container mx-auto grid grid-cols-4 h-screen max-w-6xl">
         <div className="">gird 1</div>
         <div className="bg-slate-800 bg-opacity-10 col-span-2 pt-40">
           {/* post card layout */}

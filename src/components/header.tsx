@@ -5,10 +5,12 @@ import { Popover, Transition } from "@headlessui/react";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import {
   ArrowRightOnRectangleIcon,
+  HomeIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import logo from "public/logo/strangers_hub.svg";
+import NavLink from "./NavLink";
 
 const Header = () => {
   const router = useRouter();
@@ -30,8 +32,15 @@ const Header = () => {
           </h3>
         </Link>
         {/* menu */}
-        <section className="col-span-2">
-          <div>menu</div>
+        <section className="col-span-2 flex justify-center">
+          <div className="w-full max-w-xl flex justify-start items-center">
+            <NavLink
+              href="/post"
+              name="Home"
+              active={true}
+              icon={<HomeIcon className="w-5 h-5" />}
+            />
+          </div>
         </section>
         {/* profile and logout */}
         <section className="flex justify-end items-center gap-2">
