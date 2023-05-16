@@ -3,7 +3,10 @@ import React, { Fragment } from "react";
 import { useRouter } from "next/dist/client/router";
 import { Popover, Transition } from "@headlessui/react";
 import { Bars3Icon } from "@heroicons/react/24/solid";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowRightOnRectangleIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import Image from "next/image";
 import logo from "public/logo/strangers_hub.svg";
 
@@ -31,8 +34,23 @@ const Header = () => {
           <div>menu</div>
         </section>
         {/* profile and logout */}
-        <section>
-          <div>profile</div>
+        <section className="flex justify-end items-center gap-2">
+          {/* profile pic */}
+          <div className="w-8 h-8 rounded-full overflow-hidden">
+            <Image
+              src="/strangers_hub.png"
+              alt="profile-pic"
+              width={50}
+              height={50}
+            />
+          </div>
+          {/* profile name */}
+          <p>Stranger</p>
+          <span className="h-4/5 border border-slate-500" />
+          {/* logout icon */}
+          <div className="w-8 h-8 rounded-full hover:bg-gray-600 flex justify-center items-center transform transition-colors duration-500 cursor-pointer">
+            <ArrowRightOnRectangleIcon className="w-5 h-5" />
+          </div>
         </section>
       </div>
     </nav>
