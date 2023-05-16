@@ -175,6 +175,10 @@ const PostContainer = () => {
                   time={post.time}
                   body={post.body}
                   color={post.color}
+                  likes={post.likes}
+                  dislikes={post.dislikes}
+                  hashtags={post.hashtags}
+                  totalComments={post.totalComments}
                 />
               );
             })}
