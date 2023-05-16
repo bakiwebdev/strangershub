@@ -1,30 +1,11 @@
-import Seo from "@/components/SEO";
-import PostCard from "@/components/postCard";
-import PostCardSkeleton from "@/components/postCardSkeleton";
-import PostLayout from "@/components/postLayout";
-import axios from "axios";
-import {
-  ArrowSmallUpIcon,
-  BarsArrowDownIcon,
-  CameraIcon,
-  ChevronDoubleDownIcon,
-  ChevronDownIcon,
-  MagnifyingGlassIcon,
-  PaperClipIcon,
-  PencilIcon,
-  PhotoIcon,
-} from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Link from "next/link";
-import PostCardV2 from "@/components/PostCardV2";
-import Image from "next/image";
-import Button from "@/components/Button";
-import PostInputCard from "@/components/PostInputCard";
-import SortByCard from "@/components/SortByCard";
-import PostContainer from "@/components/PostContainer";
+import PostCardV2 from "./PostCardV2";
+import SortByCard from "./SortByCard";
+import PostLayout from "./postLayout";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-const Post = () => {
+const PostContainer = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [prevSearchQuery, setPrevSearchQuery] = useState<string>("");
   const [posts, setPosts] = useState([]);
@@ -36,11 +17,6 @@ const Post = () => {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [limit, setLimit] = useState<number>(40);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const cardSkeleton = [];
-
-  for (let i = 0; i < 12; i++) {
-    cardSkeleton.push(<PostCardSkeleton key={i} />);
-  }
 
   const isBrowser = () => typeof window !== "undefined";
 
@@ -161,28 +137,12 @@ const Post = () => {
     e.preventDefault();
     fetchSearchPost();
   };
-
   return (
-    <>
-      <Seo
-        templateTitle={"Share Your Thoughts"}
-        description={
-          "Join us today and let your voice be heard - without ever having to reveal your identity!"
-        }
-      />
-      <main className="container mx-auto grid grid-cols-4 h-screen max-w-6xl">
-        <div className="">gird 1</div>
-        <div className="bg-slate-800 bg-opacity-10 col-span-2 pt-20">
-          {/* Post input area */}
-          <PostInputCard />
-          {/* space */}
-          <div className="h-5" />
-          {/* post container */}
-          <PostContainer />
-        </div>
-        <div className="">gird 3</div>
-      </main>
-      {/* <InfiniteScroll
+    <section>
+      <SortByCard />
+      <div className="h-5" />
+      {/* post card container */}
+      <InfiniteScroll
         dataLength={posts.length}
         next={fetchLatestPost}
         hasMore={hasMorePost}
@@ -194,37 +154,34 @@ const Post = () => {
         }
       >
         <PostLayout>
-          {isLoading && cardSkeleton}
+          {/* {isLoading && cardSkeleton} */}
           {isSuccess &&
             posts.map((post: any, idx: number) => {
               return (
                 // <PostCard
                 //   key={post._id + idx}
-                //   id={post._id}
-                //   date={post.date}
                 //   time={post.time}
                 //   title={post.title}
                 //   body={post.body}
                 //   likes={post.likes}
                 //   dislikes={post.dislikes}
                 //   hashtags={post.hashtags}
-                //   color={post.color}
                 //   totalComments={post.totalComments}
                 // />
-                <PostCardV2 key={post._id + idx} />
+                <PostCardV2
+                  key={post._id + idx}
+                  id={post._id}
+                  date={post.date}
+                  time={post.time}
+                  body={post.body}
+                  color={post.color}
+                />
               );
             })}
         </PostLayout>
-      </InfiniteScroll> */}
-      {/* scroll to the top button */}
-      {/* <button
-        onClick={scrollToTop}
-        className="fixed bg-orange-500 bottom-10 right-6 md:bottom-20 md:right-14 w-fit h-fit rounded-md z-40"
-      >
-        <ArrowSmallUpIcon className="w-6 h-6 m-3 text-slate-800" />
-      </button> */}
-    </>
+      </InfiniteScroll>
+    </section>
   );
 };
 
-export default Post;
+export default PostContainer;
