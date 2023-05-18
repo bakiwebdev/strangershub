@@ -13,7 +13,7 @@ const PostInputCard = () => {
     <div className="flex flex-col rounded-md bg-slate-800 p-6 gap-4">
       {/* profile & input area */}
       <div className="flex justify-center items-center gap-2">
-        <Link href="/">
+        <Link href="">
           <div className="w-12 h-12 rounded-full overflow-hidden">
             <Image
               src="/strangers_hub_post.png"
@@ -24,11 +24,13 @@ const PostInputCard = () => {
             />
           </div>
         </Link>
-        <input
-          type="text"
-          className="w-full rounded-full h-10 bg-slate-700 px-4"
-          placeholder="Share something..."
-        />
+        <Link href={"/post/new"} className="w-full rounded-full h-10">
+          <input
+            type="text"
+            className="w-full rounded-full h-10 bg-slate-700 px-4"
+            placeholder="Share something..."
+          />
+        </Link>
       </div>
       {/* horizontal line */}
       <hr className="border-0 h-[1px] bg-green-500" />

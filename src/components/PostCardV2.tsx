@@ -19,6 +19,7 @@ import {
   selectPostItems,
 } from "@/store/slices/postSlice";
 import axios from "axios";
+import Image from "next/image";
 
 interface IPostCard {
   id: string;
@@ -92,24 +93,27 @@ const PostCardV2 = (props: IPostCard) => {
   };
   return (
     <div className="flex justify-center">
-      <div
-        style={{
-          borderColor: `#${props.color}`,
-        }}
-        className="bg-slate-800 p-4 w-full max-w-xl rounded-md border"
-      >
+      <div className="bg-slate-800 p-4 w-full max-w-xl rounded-md">
         <div
           style={{
             borderColor: `#${props.color}`,
           }}
           className="flex justify-between items-center pb-4 mb-4 border-b"
         >
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             {/* user image */}
-            <div className="bg-gray-700 rounded-full h-12 w-12 mr-4"></div>
+            <div className="w-12 h-12 rounded-full overflow-hidden">
+              <Image
+                src="/strangers_hub_post.png"
+                alt="profile-pic"
+                width={50}
+                height={50}
+                className="h-full w-full object-cover"
+              />
+            </div>
             {/* username and date */}
             <div className="flex flex-col">
-              <span className="font-bold text-slate-300">User name</span>
+              <span className="font-bold text-slate-300">Stranger</span>
               <span className="font-light text-slate-300 text-xs tracking-wider">
                 {props.date} - {props.time}
               </span>
@@ -123,7 +127,7 @@ const PostCardV2 = (props: IPostCard) => {
         {/* post body */}
         <section>
           <Link href={`/post/${props.id}`}>
-            <div dangerouslySetInnerHTML={{ __html: props.body }} />
+            <div dangerouslySetInnerHTML={{ __html: props.body }} className="text-sm tracking-wider"/>
             {/* images if they have*/}
           </Link>
         </section>
