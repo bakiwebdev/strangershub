@@ -49,13 +49,13 @@ const PostInputCard = () => {
           <Button
             icon={<CameraIcon className="w-4 h-4 text-orange-500" />}
             name="Video"
-            className="text-sm font-semibold tracking-wide"
+            className="text-sm font-semibold tracking-wide opacity-50 cursor-not-allowed"
           />
           {/* attachment button */}
           <Button
             icon={<PaperClipIcon className="w-4 h-4 text-green-500" />}
             name="Attachment"
-            className="text-sm font-semibold tracking-wide"
+            className="text-sm font-semibold tracking-wide opacity-50 cursor-not-allowed"
           />
         </div>
         {/* color options */}
