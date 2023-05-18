@@ -7,6 +7,8 @@ import {
   PaperClipIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
+import Tippy from "@tippyjs/react";
+import TooltipColorOption from "./TooltipColorOption";
 
 const PostInputCard = () => {
   return (
@@ -57,10 +59,7 @@ const PostInputCard = () => {
           />
         </div>
         {/* color options */}
-        <button className="flex justify-center items-center gap-1 hover:bg-gray-600 transform transition-colors duration-500 px-2 py-1 rounded-md">
-          <span className="w-4 h-4 rounded-sm bg-green-500" />
-          <ChevronDownIcon className="w-5 h-5" />
-        </button>
+        <TooltipColorOption />
       </div>
     </div>
   );

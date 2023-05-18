@@ -128,10 +128,6 @@ const PostCardV2 = (props: IPostCard) => {
         {/* post body */}
         <section>
           <Link href={`/post/${props.id}`}>
-            {/* <div
-              dangerouslySetInnerHTML={{ __html: props.body }}
-              className="text-sm tracking-wider multi-line-truncation"
-            /> */}
             <div className="max-h-[130px] overflow-hidden">
               <p className={"text-sm line-clamp-5 multi-line-truncation"}>
                 {props.body}
