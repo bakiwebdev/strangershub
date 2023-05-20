@@ -1,3 +1,4 @@
+import InfiniteScroll from "react-infinite-scroll-component";
 import PostCardV2 from "./PostCardV2";
 import SortByCard from "./SortByCard";
 import PostLayout from "./postLayout";
@@ -18,10 +19,6 @@ const PostContainer = () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   const fetchLatestPost = () => {
-    if (onSearchMode) {
-      fetchSearchPost();
-      return;
-    }
     if (pageIndex === 1) {
       axios
         .get(`${baseUrl}/api/v1/post?page=${pageIndex}&limit=${limit}`)
@@ -36,6 +33,7 @@ const PostContainer = () => {
 
       setPageIndex(pageIndex + 1);
     } else {
+      console.log("excute fetch ", pageIndex, limit);
       axios
         .get(`${baseUrl}/api/v1/post?page=${pageIndex}&limit=${limit}`)
         .then((res) => {
@@ -118,32 +116,44 @@ const PostContainer = () => {
         .catch(() => {
           setIsLoading(false);
         });
-  }, [isModalOpen]);
+  }, [baseUrl, isModalOpen, limit]);
 
   return (
     <section>
       <SortByCard />
       <div className="h-5" />
-      <PostLayout>
-        {isLoading && "loading ..."}
-        {isSuccess &&
-          posts.map((post: any, idx: number) => {
-            return (
-              <PostCardV2
-                key={post._id}
-                id={post._id}
-                date={post.date}
-                time={post.time}
-                body={post.body}
-                color={post.color}
-                likes={post.likes}
-                dislikes={post.dislikes}
-                hashtags={post.hashtags}
-                totalComments={post.totalComments}
-              />
-            );
-          })}
-      </PostLayout>
+      <InfiniteScroll
+        dataLength={posts.length}
+        next={fetchLatestPost}
+        hasMore={hasMorePost}
+        loader={""}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+      >
+        <PostLayout>
+          {isLoading && "loading ..."}
+          {isSuccess &&
+            posts.map((post: any) => {
+              return (
+                <PostCardV2
+                  key={post._id}
+                  id={post._id}
+                  date={post.date}
+                  time={post.time}
+                  body={post.body}
+                  color={post.color}
+                  likes={post.likes}
+                  dislikes={post.dislikes}
+                  hashtags={post.hashtags}
+                  totalComments={post.totalComments}
+                />
+              );
+            })}
+        </PostLayout>
+      </InfiniteScroll>
     </section>
   );
 };

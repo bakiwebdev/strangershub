@@ -1,7 +1,13 @@
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Tippy from "@tippyjs/react";
+import { useState } from "react";
 
-const TooltipColorOption = () => {
+interface ITooltipColorOption {
+  onValueChange: (value: string) => void;
+}
+
+const TooltipColorOption = (props: ITooltipColorOption) => {
+  const [selectedColor, setSelectedColor] = useState<string>("00ED00");
   let colorList = [
     "ffffff",
     "2BAE66",
@@ -31,6 +37,10 @@ const TooltipColorOption = () => {
             return (
               <span
                 key={idx}
+                onClick={() => {
+                  setSelectedColor(color);
+                  props.onValueChange(color);
+                }}
                 style={{
                   backgroundColor: `#${color}`,
                 }}
@@ -42,7 +52,12 @@ const TooltipColorOption = () => {
       }
     >
       <div className="flex justify-center items-center gap-1 hover:bg-gray-600 transform transition-colors duration-500 px-2 py-1 rounded-md">
-        <span className="w-4 h-4 rounded-sm bg-green-500" />
+        <span
+          style={{
+            backgroundColor: `#${selectedColor}`,
+          }}
+          className="w-4 h-4 rounded-sm bg-green-500"
+        />
         <ChevronDownIcon className="w-5 h-5" />
       </div>
     </Tippy>
