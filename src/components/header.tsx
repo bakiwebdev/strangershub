@@ -27,9 +27,6 @@ const Header = () => {
             height={40}
             className="h-9 w-9 md:h-10 md:w-10"
           />
-          <h3 className="text-md md:text-lg mr-2 font-semibold ml-3 flex justify-center items-center gap-1">
-            Strangers Hub
-          </h3>
         </Link>
         {/* menu */}
         <section className="col-span-2 flex justify-center">
@@ -37,7 +34,6 @@ const Header = () => {
             <NavLink
               href="/post"
               name="Home"
-              active={true}
               icon={<HomeIcon className="w-5 h-5" />}
             />
           </div>
