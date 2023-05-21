@@ -7,7 +7,7 @@ interface ITooltipColorOption {
 }
 
 const TooltipColorOption = (props: ITooltipColorOption) => {
-  const [selectedColor, setSelectedColor] = useState<string>("00ED00");
+  const [selectedColor, setSelectedColor] = useState<string>("FF7C00");
   let colorList = [
     "ffffff",
     "2BAE66",
@@ -29,7 +29,7 @@ const TooltipColorOption = (props: ITooltipColorOption) => {
   return (
     <Tippy
       interactive={true}
-      placement="bottom-end"
+      placement="bottom-start"
       trigger="click"
       content={
         <div className="w-64 h-fit flex  flex-wrap gap-3">

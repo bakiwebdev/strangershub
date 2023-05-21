@@ -8,13 +8,16 @@ import {
 } from "@heroicons/react/24/outline";
 import TooltipColorOption from "./TooltipColorOption";
 import { useState } from "react";
+import InputTextArea from "./InputTextArea";
+import ImageUploader from "./ImageUploader";
 
 const PostInputCard = () => {
-  const [selectedColor, setSelectedColor] = useState<string>("00ED00");
+  const [selectedColor, setSelectedColor] = useState<string>("FF7C00");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   return (
-    <div className="flex flex-col rounded-md bg-slate-800 p-6 gap-4">
+    <div className="flex flex-col rounded-md bg-slate-800 p-6 gap-4 h-fit">
       {/* profile & input area */}
-      <div className="flex justify-center items-center gap-2">
+      <div className="flex justify-center items-start gap-2">
         <Link href="">
           <div className="w-12 h-12 rounded-full overflow-hidden">
             <Image
@@ -26,13 +29,10 @@ const PostInputCard = () => {
             />
           </div>
         </Link>
-        <Link href={"/post/new"} className="w-full rounded-full h-10">
-          <input
-            type="text"
-            className="w-full rounded-full h-10 bg-slate-700 px-4"
-            placeholder="Share something..."
-          />
-        </Link>
+        <InputTextArea
+          selectedImage={selectedImage}
+          resetImage={() => setSelectedImage(null)}
+        />
       </div>
       {/* horizontal line */}
       <hr
@@ -44,12 +44,14 @@ const PostInputCard = () => {
       {/* file option & post button */}
       <div className="flex justify-between items-center">
         <div className="flex gap-4">
-          {/* image button */}
-          <Button
-            icon={<PhotoIcon className="w-4 h-4 text-blue-500" />}
-            name="Image"
-            className="text-sm font-semibold tracking-wide opacity-50 cursor-not-allowed"
+          {/* color options */}
+          <TooltipColorOption
+            onValueChange={(color) => {
+              setSelectedColor(color);
+            }}
           />
+          {/* image button */}
+          <ImageUploader selectedImg={(img) => setSelectedImage(img)} />
           {/* video button */}
           <Button
             icon={<CameraIcon className="w-4 h-4 text-orange-500" />}
@@ -63,11 +65,10 @@ const PostInputCard = () => {
             className="text-sm font-semibold tracking-wide opacity-50 cursor-not-allowed"
           />
         </div>
-        {/* color options */}
-        <TooltipColorOption
-          onValueChange={(color) => {
-            setSelectedColor(color);
-          }}
+        {/* post button */}
+        <Button
+          name="Post"
+          className="rounded-md bg-orange-500 px-4 py-2 text-sm"
         />
       </div>
     </div>
