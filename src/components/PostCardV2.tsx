@@ -134,6 +134,15 @@ const PostCardV2 = (props: IPostCard) => {
               </p>
             </div>
             {/* images if they have*/}
+            <div className="w-full pt-4 relative">
+              <Image
+                src="https://images.unsplash.com/photo-1684767555842-ffeea8bd1463?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80"
+                alt="post image"
+                width={500}
+                height={500}
+                className="object-cover max-h-[300px] w-full rounded-md"
+              />
+            </div>
           </Link>
         </section>
         {/* link | message */}
