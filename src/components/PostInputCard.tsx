@@ -1,19 +1,31 @@
 import Image from "next/image";
 import Link from "next/link";
 import Button from "./Button";
-import {
-  CameraIcon,
-  PaperClipIcon,
-  PhotoIcon,
-} from "@heroicons/react/24/outline";
+import { CameraIcon, PaperClipIcon } from "@heroicons/react/24/outline";
 import TooltipColorOption from "./TooltipColorOption";
 import { useState } from "react";
 import InputTextArea from "./InputTextArea";
 import ImageUploader from "./ImageUploader";
+import axios from "axios";
+import uploadImage from "@/libs/uploadImage";
 
 const PostInputCard = () => {
   const [selectedColor, setSelectedColor] = useState<string>("FF7C00");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const handleUploadImage = async () => {
+    try {
+      if (selectedImage) {
+        const image = await fetch(selectedImage);
+        const blob = await image.blob();
+        const file = new File([blob], "image.jpg", { type: blob.type });
+
+        uploadImage(file);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="flex flex-col rounded-md bg-slate-800 p-6 gap-4 h-fit">
       {/* profile & input area */}
@@ -67,6 +79,7 @@ const PostInputCard = () => {
         </div>
         {/* post button */}
         <Button
+          onClick={handleUploadImage}
           name="Post"
           className="rounded-md bg-orange-500 px-4 py-2 text-sm"
         />

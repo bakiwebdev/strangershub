@@ -43,10 +43,11 @@ const Header = () => {
           {/* profile pic */}
           <div className="w-8 h-8 rounded-full overflow-hidden">
             <Image
-              src="/strangers_hub.png"
+              src="/strangers_hub_post.png"
               alt="profile-pic"
               width={50}
               height={50}
+              className="object-cover h-full w-full"
             />
           </div>
           {/* profile name */}
