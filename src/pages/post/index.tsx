@@ -56,7 +56,7 @@ const Post = () => {
     }
     if (pageIndex === 1) {
       axios
-        .get(`${baseUrl}/api/v1/post?page=${pageIndex}&limit=${limit}`)
+        .get(`${baseUrl}/api/post?page=${pageIndex}&limit=${limit}`)
         .then((res) => {
           setIsLoading(false);
           setPosts(res.data.posts);
@@ -69,7 +69,7 @@ const Post = () => {
       setPageIndex(pageIndex + 1);
     } else {
       axios
-        .get(`${baseUrl}/api/v1/post?page=${pageIndex}&limit=${limit}`)
+        .get(`${baseUrl}/api/post?page=${pageIndex}&limit=${limit}`)
         .then((res) => {
           if (res.data.posts.length === 0) {
             setHasMorePost(false);
@@ -90,7 +90,7 @@ const Post = () => {
       const index = 1;
       setHasMorePost(true);
       axios
-        .get(`${baseUrl}/api/v1/post?page=${index}&limit=${limit}`)
+        .get(`${baseUrl}/api/post?page=${index}&limit=${limit}`)
         .then((res) => {
           setIsLoading(false);
           setPosts(res.data.posts);
@@ -109,7 +109,7 @@ const Post = () => {
 
       axios
         .get(
-          `${baseUrl}/api/v1/post/search?query=${searchQuery}&page=${index}&limit=${limit}`
+          `${baseUrl}/api/post/search?query=${searchQuery}&page=${index}&limit=${limit}`
         )
         .then((res) => {
           let postConcat = onSearchMode
@@ -140,7 +140,7 @@ const Post = () => {
   useEffect(() => {
     !isModalOpen &&
       axios
-        .get(`${baseUrl}/api/v1/post?page=${1}&limit=${limit}`)
+        .get(`${baseUrl}/api/post?page=${1}&limit=${limit}`)
         .then((res) => {
           setPageIndex(2);
           setHasMorePost(true);

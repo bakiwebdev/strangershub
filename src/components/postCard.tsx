@@ -57,7 +57,7 @@ const PostCard = ({
   const handleLikeButton = async () => {
     !isLiked &&
       (await axios
-        .get(`${baseUrl}/api/v1/post/${id}/like`)
+        .get(`${baseUrl}/api/post/${id}/like`)
         .then((res) => {
           setPostLikes(res.data.likes as number);
           dispatch(likePost(id));
@@ -77,7 +77,7 @@ const PostCard = ({
   const handleDislikeButton = async () => {
     !isDisliked &&
       (await axios
-        .get(`${baseUrl}/api/v1/post/${id}/dislike`)
+        .get(`${baseUrl}/api/post/${id}/dislike`)
         .then((res) => {
           setPostDislikes(res.data.dislikes);
           dispatch(dislikePost(id));

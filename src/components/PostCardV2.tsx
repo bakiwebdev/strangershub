@@ -56,7 +56,7 @@ const PostCardV2 = (props: IPostCard) => {
   const handleLikeButton = async () => {
     !isLiked &&
       (await axios
-        .get(`${baseUrl}/api/v1/post/${props.id}/like`)
+        .get(`${baseUrl}/api/post/${props.id}/like`)
         .then((res) => {
           setPostLikes(res.data.likes as number);
           dispatch(likePost(props.id));
@@ -76,7 +76,7 @@ const PostCardV2 = (props: IPostCard) => {
   const handleDislikeButton = async () => {
     !isDisliked &&
       (await axios
-        .get(`${baseUrl}/api/v1/post/${props.id}/dislike`)
+        .get(`${baseUrl}/api/post/${props.id}/dislike`)
         .then((res) => {
           setPostDislikes(res.data.dislikes);
           dispatch(dislikePost(props.id));
