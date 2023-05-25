@@ -8,8 +8,10 @@ import InputTextArea from "./InputTextArea";
 import ImageUploader from "./ImageUploader";
 import axios from "axios";
 import uploadImage from "@/libs/uploadImage";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const PostInputCard = () => {
+  const [text, setText] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("FF7C00");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -19,9 +21,22 @@ const PostInputCard = () => {
         const image = await fetch(selectedImage);
         const blob = await image.blob();
         const file = new File([blob], "image.jpg", { type: blob.type });
-
-        uploadImage(file);
+        await uploadImage(file);
       }
+      axios
+        .post(`${baseUrl}/api/post`, {
+          title: "static title",
+          body: text,
+          hashtags: "",
+          color: selectedColor,
+        })
+        .then(() => {
+          setText("");
+          setSelectedImage(null);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } catch (error) {
       console.error(error);
     }
@@ -42,6 +57,8 @@ const PostInputCard = () => {
           </div>
         </Link>
         <InputTextArea
+          messageValue={text}
+          setMessageValue={(value) => setText(value)}
           selectedImage={selectedImage}
           resetImage={() => setSelectedImage(null)}
         />

@@ -4,6 +4,8 @@ import Image from "next/image";
 interface IInputTextArea {
   selectedImage: string | null;
   resetImage: () => void;
+  messageValue: string;
+  setMessageValue: (value: string) => void;
 }
 
 const InputTextArea = (props: IInputTextArea) => {
@@ -14,6 +16,8 @@ const InputTextArea = (props: IInputTextArea) => {
         className="text-sm w-full rounded-md h-full bg-transparent pt-2 px-4 outline-none text-slate-200 tracking-wide appearance-none"
         style={{ overflow: "hidden" }}
         rows={1}
+        value={props.messageValue}
+        onChange={(e) => props.setMessageValue(e.target.value)}
         onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
           const target = e.target as HTMLTextAreaElement;
           target.style.height = "auto";

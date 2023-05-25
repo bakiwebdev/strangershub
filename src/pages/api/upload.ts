@@ -1,6 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "4mb", // Set desired value here
+    },
+  },
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -12,27 +20,18 @@ export default async function handler(
   }
 
   try {
-    const { file } = req.body;
-    // console.clear()
-    // console.log("body: ", req.body);
-    // const formData = new FormData();
-    // formData.append("file", file);
+    const file = req.body.file; // Assuming the field name is 'file'
 
-    // const config = {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // };
+    const formData = new FormData();
+    formData.append("file", file);
 
-    // const response = await axios.post(
-    //   "https://api.anonfiles.com/upload",
-    //   formData,
-    //   config
-    // );
-    console.log("file: ", req.body);
-    return res.status(200).json(req.body);
+    const response = await axios.post(
+      "https://api.anonfiles.com/upload",
+      formData
+    );
+
+    res.status(200).json(response.data);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Something went wrong" });
+    return res.status(500).json({ err: "Something went wrong", error });
   }
 }
