@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import dbConnect from "@/utils/dbConnect";
+import dbConnect, { dbDisconnect } from "@/utils/dbConnect";
 import { createPost, getPosts } from "@/helper/post-helper";
 import moment from "moment";
 
@@ -36,9 +36,11 @@ export default async function handler(
         const { limit = 10, page = 1 } = req.query;
         // get method
         const posts = await getPosts(Number(page), Number(limit));
+        await dbDisconnect();
         return res.status(200).json(posts);
       } catch (error) {
         console.error(error);
+        await dbDisconnect();
         return res.status(500).json({ success: false, error: "Server Error" });
       }
     case "POST":
@@ -100,11 +102,15 @@ export default async function handler(
               err,
             });
           });
+        await dbDisconnect();
+        return;
       } catch (error) {
         console.error(error);
+        await dbDisconnect();
         return res.status(400).json({ success: false, error: "Bad Request" });
       }
     default:
+      await dbDisconnect();
       return res.status(400).json({ success: false, error: "Bad Request" });
   }
 }

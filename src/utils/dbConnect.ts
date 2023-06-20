@@ -14,14 +14,23 @@ const dbConnect = async () => {
     };
 
     const connection = await mongoose.connect(
-      process.env.DB_CONNECTION_STRING || "",
-      options
+      process.env.DB_CONNECTION_STRING || ""
+      // options
     );
     cachedConnection = connection.connection;
     return connection.connection;
   } catch (error) {
     console.error("Failed to connect to MongoDB:", error);
     throw error;
+  }
+};
+
+export const dbDisconnect = async () => {
+  try {
+    await mongoose.disconnect();
+    return;
+  } catch (err) {
+    return;
   }
 };
 

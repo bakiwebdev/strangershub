@@ -6,8 +6,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const PostContainer = () => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [prevSearchQuery, setPrevSearchQuery] = useState<string>("");
   const [posts, setPosts] = useState([]);
   const [onSearchMode, setOnSearchMode] = useState<boolean>(false);
   const [hasMorePost, setHasMorePost] = useState<boolean>(true);
@@ -50,59 +48,6 @@ const PostContainer = () => {
     }
   };
 
-  const fetchSearchPost = () => {
-    if (!searchQuery.trim()) {
-      setOnSearchMode(false);
-      const index = 1;
-      setHasMorePost(true);
-      axios
-        .get(`${baseUrl}/api/post?page=${index}&limit=${limit}`)
-        .then((res) => {
-          setIsLoading(false);
-          setPosts(res.data.posts);
-          setIsSuccess(true);
-          setPageIndex(index + 1);
-        })
-        .catch(() => {
-          setIsLoading(false);
-        });
-    } else {
-      setIsLoading(true);
-      setPageIndex(1);
-      setHasMorePost(true);
-      let index = onSearchMode ? pageIndex : 1;
-      prevSearchQuery != searchQuery && (index = 1);
-
-      axios
-        .get(
-          `${baseUrl}/api/post/search?query=${searchQuery}&page=${index}&limit=${limit}`
-        )
-        .then((res) => {
-          let postConcat = onSearchMode
-            ? [...posts, ...res.data.posts]
-            : res.data.posts;
-
-          prevSearchQuery != searchQuery && (postConcat = res.data.posts);
-          setPrevSearchQuery(searchQuery);
-          setOnSearchMode(true);
-          setPageIndex(index + 1);
-          setIsLoading(false);
-          if (res.data.posts.length === 0) {
-            setHasMorePost(false);
-          }
-          setPosts(postConcat as any);
-        })
-        .catch(() => {
-          setIsLoading(false);
-        });
-    }
-  };
-
-  useEffect(() => {
-    fetchLatestPost();
-  }, []);
-
-  // when to post modal is closed
   useEffect(() => {
     !isModalOpen &&
       axios
