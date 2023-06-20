@@ -8,9 +8,9 @@ export default function Home() {
       {/* <div className="max-w-7xl mx-auto pt-24 sm:px-8 md:px-6 mt-16 px-4 sm:mt-24"> */}
       <div className="max-w-7xl mx-auto pt-24 sm:px-8 md:px-6 mt-16 px-4 sm:mt-24 text-center mb-20">
         <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
-          <span className="block xl:inline">Share Your Thoughts</span>{" "}
-          <span className="block text-orange-600 xl:inline">
-            Anonymously with Strangers Hub
+          <span className="block xl:inline text-orange-600">Strangers Hub</span>{" "}
+          <span className="block xl:inline tracking-wider">
+            እንደልቦ አፎን የሚከፍቱበት ብቸኛው Platform
           </span>
         </h1>
         <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
