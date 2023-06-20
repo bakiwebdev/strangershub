@@ -15,6 +15,7 @@ const NewPost = () => {
     hashtags: "",
     color: "ffffff",
   });
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   // mutate request
   const { mutate, isLoading: isPostLoading } = useMutation({
@@ -24,6 +25,7 @@ const NewPost = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["getPosts"] });
       setPost({ title: "", body: "", hashtags: "", color: "ffffff" });
+      setDisabled(false);
       router.push("/post");
     },
   });
@@ -103,8 +105,14 @@ const NewPost = () => {
         />
         {/* publish button  */}
         <button
-          onClick={() => mutate()}
-          className="w-full flex justify-center items-center px-2 md:px-5 py-2 rounded-md text-slate-800 bg-orange-500 font-semibold"
+          disabled={disabled}
+          onClick={() => {
+            setDisabled(true);
+            mutate();
+          }}
+          className={`w-full flex justify-center items-center px-2 md:px-5 py-2 rounded-md text-slate-800 bg-orange-500 font-semibold ${
+            disabled && "cursor-progress"
+          }`}
         >
           Publish
         </button>
