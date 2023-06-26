@@ -43,8 +43,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Loglib
         config={{
           id: "www_strangershub",
-
-          host: "https://www.loglib.io,",
+          host: "https://www.loglib.io",
         }}
       />
 
