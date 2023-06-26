@@ -1,5 +1,6 @@
 import Header from "@/components/header";
 import "@/styles/globals.css";
+import Loglib from "@loglib/tracker/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
 import type { AppProps } from "next/app";
@@ -36,6 +37,14 @@ export default function App({ Component, pageProps }: AppProps) {
               page_path: window.location.pathname,
             });
           `,
+        }}
+      />
+
+      <Loglib
+        config={{
+          id: "www_strangershub",
+
+          host: "https://www.loglib.io,",
         }}
       />
 
