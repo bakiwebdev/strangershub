@@ -38,8 +38,6 @@ const PostCardV2 = (props: IPostCard) => {
   const dispatch = useDispatch();
   const commentArea = "comment-input-area";
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const [postLikes, setPostLikes] = useState<number>(props.likes);
-  const [postDislikes, setPostDislikes] = useState<number>(props.dislikes);
   const [isCopied, setIsCopied] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
@@ -56,10 +54,10 @@ const PostCardV2 = (props: IPostCard) => {
   const handleLikeButton = async () => {
     !isLiked &&
       (await axios
-        .get(`${baseUrl}/api/post/${props.id}/like`)
+        .get(`${baseUrl}/api/v1/post/${props.id}/like`)
         .then((res) => {
-          setPostLikes(res.data.likes as number);
           dispatch(likePost(props.id));
+          setIsLiked(true);
         })
         .catch((error) => {
           if (error.response && error.response.status === 429) {
@@ -76,10 +74,10 @@ const PostCardV2 = (props: IPostCard) => {
   const handleDislikeButton = async () => {
     !isDisliked &&
       (await axios
-        .get(`${baseUrl}/api/post/${props.id}/dislike`)
+        .get(`${baseUrl}/api/v1/post/${props.id}/dislike`)
         .then((res) => {
-          setPostDislikes(res.data.dislikes);
           dispatch(dislikePost(props.id));
+          setIsDisliked(true);
         })
         .catch((error) => {
           if (error.response && error.response.status === 429) {
@@ -148,51 +146,51 @@ const PostCardV2 = (props: IPostCard) => {
           </Link>
         </section>
         {/* link | message */}
-        <div className="flex justify-start gap-2 mt-4">
+        <div className="flex justify-between gap-2 mt-4">
+          <span className="text-xs text-slate-300">- views</span>
+          <span className="text-xs text-slate-300">
+            {props.totalComments} Comments
+          </span>
+        </div>
+        <div className="flex justify-between gap-2 mt-4">
           {/* heart icon */}
-          <Tippy content={<span>Like</span>}>
-            <div
-              onClick={handleLikeButton}
-              className="rounded-full group flex gap-1 pr-3 pl-1 text-red-500 hover:bg-red-500/10 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
-            >
-              <div className="flex justify-center items-center px-1">
-                {isLiked ? (
-                  <HeartIconSolid className="w-4 h-4" />
-                ) : (
-                  <HeartIcon className="w-4 h-4" />
-                )}
-              </div>
-              <p className="font-mono">{postLikes}</p>
+          <div
+            onClick={handleLikeButton}
+            className="rounded-full group flex gap-1 pr-3 pl-1 text-red-500 hover:bg-red-500/10 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+          >
+            <div className="flex justify-center items-center px-1">
+              {isLiked ? (
+                <HeartIconSolid className="w-4 h-4" />
+              ) : (
+                <HeartIcon className="w-4 h-4" />
+              )}
             </div>
-          </Tippy>
+            <p className="font-mono">Like</p>
+          </div>
           {/* thumbs down icon */}
-          <Tippy content={<span>Dislike</span>}>
-            <div
-              onClick={handleDislikeButton}
-              className="rounded-full flex gap-1 pr-3 pl-1 text-orange-500 hover:bg-orange-500/10 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
-            >
-              <div className="flex justify-center items-center p-1">
-                {isDisliked ? (
-                  <HandThumbDownIconSolid className="w-4 h-4" />
-                ) : (
-                  <HandThumbDownIcon className="w-4 h-4" />
-                )}
-              </div>
-              <p className="font-mono">{postDislikes}</p>
+          <div
+            onClick={handleDislikeButton}
+            className="rounded-full flex gap-1 pr-3 pl-1 text-orange-500 hover:bg-orange-500/10 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+          >
+            <div className="flex justify-center items-center p-1">
+              {isDisliked ? (
+                <HandThumbDownIconSolid className="w-4 h-4" />
+              ) : (
+                <HandThumbDownIcon className="w-4 h-4" />
+              )}
             </div>
-          </Tippy>
+            <p className="font-mono">Dislike</p>
+          </div>
           {/* chat icon */}
-          <Tippy content={<span>Comments</span>}>
-            <Link
-              href={`/post/${props.id}#${commentArea}`}
-              className="rounded-full flex gap-1 pr-3 pl-1 text-blue-500 hover:bg-blue-500/10 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
-            >
-              <div className="flex justify-center items-center p-1 ">
-                <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4" />
-              </div>
-              <p className="font-mono">{props.totalComments}</p>
-            </Link>
-          </Tippy>
+          <Link
+            href={`/post/${props.id}#${commentArea}`}
+            className="rounded-full flex gap-1 pr-3 pl-1 text-blue-500 hover:bg-blue-500/10 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+          >
+            <div className="flex justify-center items-center p-1 ">
+              <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4" />
+            </div>
+            <p className="font-mono">Comments</p>
+          </Link>
         </div>
       </div>
     </div>

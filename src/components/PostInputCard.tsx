@@ -15,7 +15,7 @@ interface IPostInputCard {
   callback: () => void;
 }
 
-const PostInputCard = (props: IPostInputCard) => {
+const PostInputCard = () => {
   const [text, setText] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("FF7C00");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -38,7 +38,6 @@ const PostInputCard = (props: IPostInputCard) => {
         .then(() => {
           setText("");
           setSelectedImage(null);
-          props.callback();
         })
         .catch((err) => {
           console.log(err);
@@ -94,14 +93,6 @@ const PostInputCard = (props: IPostInputCard) => {
             <Button
               icon={<CameraIcon className="w-4 h-4 text-orange-500" />}
               name="Video"
-              className="text-sm font-semibold tracking-wide opacity-50 cursor-not-allowed"
-            />
-          </span>
-          {/* attachment button */}
-          <span className="hidden md:block">
-            <Button
-              icon={<PaperClipIcon className="w-4 h-4 text-green-500" />}
-              name="Attachment"
               className="text-sm font-semibold tracking-wide opacity-50 cursor-not-allowed"
             />
           </span>
