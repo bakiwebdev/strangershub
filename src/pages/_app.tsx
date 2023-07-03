@@ -1,5 +1,4 @@
-import Header from "@/components/header";
-import Loglib from "@loglib/tracker/react";
+import Header from "@/components/Header";
 import "@/styles/globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
@@ -45,12 +44,6 @@ export default function App({ Component, pageProps }: AppProps) {
           <Provider store={store}>
             <Header />
             <Component {...pageProps} />
-            <Loglib
-              config={{
-                id: "www_strangershub",
-                host: "https://www.loglib.io",
-              }}
-            />
             {/* <Footer /> */}
           </Provider>
         </AnimatePresence>
