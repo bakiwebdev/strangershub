@@ -20,6 +20,7 @@ import {
 } from "@/store/slices/postSlice";
 import axios from "axios";
 import Image from "next/image";
+import { convert } from "html-to-text";
 
 interface IPostCard {
   id: string;
@@ -127,9 +128,9 @@ const PostCardV2 = (props: IPostCard) => {
         <section>
           <Link href={`/post/${props.id}`}>
             <div className="max-h-[130px] overflow-hidden">
-              <p className={"text-sm line-clamp-5 multi-line-truncation"}>
+              <pre className={"text-sm line-clamp-5 multi-line-truncation"}>
                 {props.body}
-              </p>
+              </pre>
             </div>
             {/* images if they have*/}
             {props.image && (

@@ -1,30 +1,15 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect } from "react";
 import { ArrowSmallUpIcon } from "@heroicons/react/24/outline";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 import Seo from "@/components/SEO";
-import PostCardSkeleton from "@/components/postCardSkeleton";
 import PostInputCard from "@/components/PostInputCard";
 import PostContainer from "@/components/PostContainer";
 
 const Post = () => {
-  const [posts, setPosts] = useState([]);
-  const [hasMorePost, setHasMorePost] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [pageIndex, setPageIndex] = useState(1);
-  const [limit, setLimit] = useState(40);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const cardSkeleton = [];
-
-  const [showButton, setShowButton] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       console.log(scrollY);
-      setShowButton(scrollY > 200);
     };
 
     window.addEventListener("scroll", handleScroll);
