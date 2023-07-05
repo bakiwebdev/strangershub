@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/24/solid";
 import Tippy from "@tippyjs/react";
 import Link from "next/link";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   dislikePost,
@@ -102,12 +102,12 @@ const PostCardV2 = (props: IPostCard) => {
         >
           <div className="flex items-center gap-2">
             {/* user image */}
-            <div className="w-12 h-12 rounded-full overflow-hidden">
+            <div className="w-8 h-8 rounded-full overflow-hidden">
               <Image
-                src="/strangers_hub_post.png"
+                src={`https://robohash.org/${props.id}?size=32x32`}
                 alt="profile-pic"
-                width={50}
-                height={50}
+                width={32}
+                height={32}
                 className="h-full w-full object-cover"
               />
             </div>

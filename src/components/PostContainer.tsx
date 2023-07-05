@@ -5,20 +5,18 @@ import axios from "axios";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
 const PostContainer = () => {
   const [posts, setPosts] = useState([]);
-  const [pageIndex, setPageIndex] = useState(1);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   const { isLoading, error, isError, data } = useQuery({
     queryKey: ["posts"],
     queryFn: () =>
-      axios
-        .get(`${baseUrl}/api/v1/post?page=${pageIndex}&limit=40`)
-        .then((res) => {
-          setPosts(res.data.posts);
-          return res;
-        }),
+      axios.get(`${baseUrl}/api/v1/post?page=1&limit=150`).then((res) => {
+        setPosts(res.data.posts);
+        return res;
+      }),
   });
 
   if (isLoading) return <p>Loading...</p>;
