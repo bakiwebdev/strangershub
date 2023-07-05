@@ -1,9 +1,9 @@
-import PostCard from "./PostCard";
 import SortByCard from "./SortByCard";
 import PostLayout from "./PostLayout";
 import axios from "axios";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import PostCard from "./PostCard";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
