@@ -7,7 +7,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import logo from "public/logo/strangers_hub.svg";
 
-const header = () => {
+const Header = () => {
   const router = useRouter();
   const currentPage = router.pathname.split("/")[1];
 
@@ -163,4 +163,4 @@ const header = () => {
   );
 };
 
-export default header;
+export default Header;
