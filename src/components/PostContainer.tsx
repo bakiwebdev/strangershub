@@ -10,7 +10,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const PostContainer = () => {
   const [posts, setPosts] = useState([]);
 
-  const { isLoading, error, isError, data } = useQuery({
+  const { isLoading, error, isError } = useQuery({
     queryKey: ["posts"],
     queryFn: () =>
       axios.get(`${baseUrl}/api/v1/post?page=1&limit=150`).then((res) => {

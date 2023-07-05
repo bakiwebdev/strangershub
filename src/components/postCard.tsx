@@ -6,21 +6,14 @@ import {
 } from "@heroicons/react/24/outline";
 import {
   HeartIcon as HeartIconSolid,
-  ShareIcon,
   HandThumbDownIcon as HandThumbDownIconSolid,
 } from "@heroicons/react/24/solid";
-import Tippy from "@tippyjs/react";
 import Link from "next/link";
-import { lazy, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  dislikePost,
-  likePost,
-  selectPostItems,
-} from "@/store/slices/postSlice";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { dislikePost, likePost } from "@/store/slices/postSlice";
 import axios from "axios";
 import Image from "next/image";
-import { convert } from "html-to-text";
 
 interface IPostCard {
   id: string;
@@ -35,21 +28,12 @@ interface IPostCard {
   image?: string;
 }
 
-const PostCardV2 = (props: IPostCard) => {
+const PostCard = (props: IPostCard) => {
   const dispatch = useDispatch();
   const commentArea = "comment-input-area";
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const [isCopied, setIsCopied] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
-  const handleCopyUrl = () => {
-    const currentUrl = window.location.href;
-    navigator.clipboard.writeText(`${currentUrl}/${props.id}`);
-    setIsCopied(true);
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 2000);
-  };
 
   // handle like button
   const handleLikeButton = async () => {
@@ -199,4 +183,4 @@ const PostCardV2 = (props: IPostCard) => {
   );
 };
 
-export default PostCardV2;
+export default PostCard;
