@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import PostCard from "./postCard";
-import PostLayout from "./PostLayout";
+import PostLayout from "./postLayout";
 import { PostCardInterface } from "@/Interface/PostInterface";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
