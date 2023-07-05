@@ -30,7 +30,7 @@ const PostInputCard = () => {
         await uploadImage(file);
       }
       return axios.post(`${baseUrl}/api/v1/post`, {
-        title: "static title",
+        title: "sh_no_title",
         body: text,
         hashtags: "",
         color: selectedColor,

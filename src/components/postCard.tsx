@@ -105,6 +105,7 @@ const PostCardV2 = (props: IPostCard) => {
             <div className="w-8 h-8 rounded-full overflow-hidden">
               <Image
                 src={`https://robohash.org/${props.id}?size=32x32`}
+                loading="lazy"
                 alt="profile-pic"
                 width={32}
                 height={32}
@@ -125,11 +126,11 @@ const PostCardV2 = (props: IPostCard) => {
           </div>
         </div>
         {/* post body */}
-        <section>
-          <Link href={`/post/${props.id}`}>
-            <div className="max-h-[130px] overflow-hidden">
-              <pre className={"text-sm line-clamp-5 multi-line-truncation"}>
-                {props.body}
+        <Link href={`/post/${props.id}`}>
+          <section className="max-w-full flex flex-wrap">
+            <div className="w-fit">
+              <pre className="text-sm max-w-fit whitespace-pre-line overflow-hidden">
+                <span className="multi-line-truncation">{props.body}</span>
               </pre>
             </div>
             {/* images if they have*/}
@@ -144,8 +145,8 @@ const PostCardV2 = (props: IPostCard) => {
                 />
               </div>
             )}
-          </Link>
-        </section>
+          </section>
+        </Link>
         {/* link | message */}
         <div className="flex justify-between gap-2 mt-4">
           <span className="text-xs text-slate-300">- views</span>
