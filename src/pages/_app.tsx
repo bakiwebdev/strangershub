@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import "@/styles/globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AnimatePresence } from "framer-motion";
 import type { AppProps } from "next/app";
 import Script from "next/script";
@@ -47,6 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
             {/* <Footer /> */}
           </Provider>
         </AnimatePresence>
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </>
   );

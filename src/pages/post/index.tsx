@@ -31,8 +31,8 @@ const Post = () => {
         description="Join us today and let your voice be heard - without ever having to reveal your identity!"
       />
       <span id="to-the-top" />
-      <main className="container p-2 mx-auto grid md:grid-cols-5 h-screen max-w-6xl">
-        <div>{/* right side */}</div>
+      <main className="container p-2 mx-auto grid grid-cols-1 md:grid-cols-5 h-screen max-w-6xl">
+        <div className="hidden md:block">{/* right side */}</div>
         <div className="col-span-3 pt-20 relative">
           <PostInputCard />
           <div className="h-5" />
@@ -44,7 +44,7 @@ const Post = () => {
             <ArrowSmallUpIcon className="w-6 h-6 m-3 text-slate-800" />
           </button>
         </div>
-        <div>{/* left side */}</div>
+        <div className="hidden md:block">{/* left side */}</div>
       </main>
     </>
   );

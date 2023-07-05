@@ -1,37 +1,36 @@
 import PostCard from "./PostCard";
 import SortByCard from "./SortByCard";
 import PostLayout from "./PostLayout";
-import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 const PostContainer = () => {
   const [posts, setPosts] = useState([]);
-  // const [isLoading, setIsLoading] = useState(true);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
-  const [limit, setLimit] = useState(40);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["postData"],
+  const { isLoading, error, isError, data } = useQuery({
+    queryKey: ["posts"],
     queryFn: () =>
-      fetch(`${baseUrl}/api/v1/post?page=${pageIndex}&limit=${limit}`).then(
-        (res) => res.json()
-      ),
+      axios
+        .get(`${baseUrl}/api/v1/post?page=${pageIndex}&limit=40`)
+        .then((res) => {
+          setPosts(res.data.posts);
+          return res;
+        }),
   });
 
-  if (isLoading) return "Loading...";
+  if (isLoading) return <p>Loading...</p>;
 
-  if (error) return "An error has occurred: " + error.message;
+  if (isError) return <p>{`An error has occurred: ${error}`}</p>;
 
   return (
     <>
       <SortByCard />
       <div className="h-5" />
       <PostLayout>
-        {data.posts.map((post: any) => {
+        {posts.map((post: any) => {
           return (
             <PostCard
               key={post._id}

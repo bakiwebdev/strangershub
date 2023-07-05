@@ -6,11 +6,13 @@ interface IButton {
   onClick?: MouseEventHandler<HTMLButtonElement>;
   className?: string;
   icon?: React.ReactNode;
+  disabled?: boolean;
 }
 
 const Button = (props: IButton) => {
   return (
     <button
+      disabled={props.disabled}
       onClick={props.onClick}
       className={clsx(
         `flex justify-center items-center gap-1 ${props.className}`,
