@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import PostCard from "./PostCard";
 import PostLayout from "./PostLayout";
+import { PostCardInterface, PostInterface } from "@/Interface/PostInterface";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -28,11 +29,11 @@ const PostContainer = () => {
       <SortByCard />
       <div className="h-5" />
       <PostLayout>
-        {posts.map((post: any) => {
+        {posts.map((post: PostCardInterface) => {
           return (
             <PostCard
               key={post._id}
-              id={post._id}
+              id={post._id || "no_id"}
               date={post.date}
               time={post.time}
               body={post.body}

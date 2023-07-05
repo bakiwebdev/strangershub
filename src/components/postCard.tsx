@@ -14,21 +14,9 @@ import { useDispatch } from "react-redux";
 import { dislikePost, likePost } from "@/store/slices/postSlice";
 import axios from "axios";
 import Image from "next/image";
+import { PostCardInterface } from "@/Interface/PostInterface";
 
-interface IPostCard {
-  id: string;
-  date: string;
-  time: string;
-  color: string;
-  body: string;
-  likes: number;
-  dislikes: number;
-  hashtags: string;
-  totalComments: number;
-  image?: string;
-}
-
-const PostCard = (props: IPostCard) => {
+const PostCard = (props: PostCardInterface) => {
   const dispatch = useDispatch();
   const commentArea = "comment-input-area";
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
