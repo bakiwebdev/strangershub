@@ -15,6 +15,7 @@ import { dislikePost, likePost } from "@/store/slices/postSlice";
 import axios from "axios";
 import Image from "next/image";
 import { PostCardInterface } from "@/Interface/PostInterface";
+import { convert } from "html-to-text";
 
 const PostCard = (props: PostCardInterface) => {
   const dispatch = useDispatch();
@@ -22,6 +23,13 @@ const PostCard = (props: PostCardInterface) => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
+
+  // check if it is html first
+  const isHTML = (str: string) => {
+    // Regular expression to check if the string contains HTML tags
+    let htmlRegex = /<[a-z][\s\S]*>/i;
+    return htmlRegex.test(str);
+  };
 
   // handle like button
   const handleLikeButton = async () => {
@@ -102,7 +110,9 @@ const PostCard = (props: PostCardInterface) => {
           <section className="max-w-full flex flex-wrap">
             <div className="w-fit">
               <pre className="text-sm max-w-fit whitespace-pre-line overflow-hidden">
-                <span className="multi-line-truncation">{props.body}</span>
+                <span className="multi-line-truncation">
+                  {isHTML(props.body) ? convert(props.body) : props.body}
+                </span>
               </pre>
             </div>
             {/* images if they have*/}
