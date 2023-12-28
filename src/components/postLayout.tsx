@@ -1,7 +1,10 @@
 import { PostLayoutInterface } from "@/Interface/PostInterface";
 import { motion, Variants } from "framer-motion";
 
-const PostLayout = ({ children }: PostLayoutInterface) => {
+interface PostLayoutProps {
+  children: React.ReactNode | React.ReactNode[];
+}
+const PostLayout = ({ children }: PostLayoutProps) => {
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {

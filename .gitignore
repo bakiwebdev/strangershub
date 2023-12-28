@@ -2,6 +2,7 @@
 
 .env
 local.env
+package-lock.json
 
 # dependencies
 /node_modules
