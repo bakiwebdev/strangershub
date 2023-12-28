@@ -1,3 +1,4 @@
+import { PostLayoutInterface } from "@/Interface/PostInterface";
 import { motion, Variants } from "framer-motion";
 
 interface PostLayoutProps {

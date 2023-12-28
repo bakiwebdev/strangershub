@@ -1,12 +1,12 @@
 import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/solid";
 
-interface commentProps {
+interface CommentProps {
   date: string;
   time: string;
   body: string;
 }
 
-const CommentCard = ({ date, time, body }: commentProps) => {
+const CommentCard = ({ date, time, body }: CommentProps) => {
   return (
     <div className="h-fit bg-slate-800/20 rounded-lg px-4 py-2 text-gray-400">
       <div className="my-2 flex justify-center items-center gap-2 w-fit bg-orange-500/10 text-orange-500 px-2 py-1 rounded-full">

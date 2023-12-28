@@ -11,7 +11,25 @@ export interface PostInterface {
   totalComments: number;
 }
 
-interface CommentInterface {
+export interface PostCardInterface {
+  _id?: string;
+  id: string;
+  date: string;
+  time: string;
+  color: string;
+  body: string;
+  likes: number;
+  dislikes: number;
+  hashtags: string;
+  totalComments: number;
+  image?: string;
+}
+
+export interface PostLayoutInterface {
+  children: React.ReactNode | React.ReactNode[];
+}
+
+export interface CommentInterface {
   _id: string;
   date: string;
   time: string;

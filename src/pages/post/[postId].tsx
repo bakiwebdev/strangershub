@@ -156,6 +156,12 @@ const Post = (post: PostInterface) => {
   const handleBackClick = () => {
     router.back();
   };
+
+  const getTitle = (title: string) => {
+    if (title === "sh_no_title") return;
+
+    return title;
+  };
   return (
     <>
       <Seo
@@ -236,24 +242,16 @@ const Post = (post: PostInterface) => {
             </div>
           </div>
         </div>
-        {/* post heading */}
-        <div className="flex justify-center items-center my-4">
-          <h3
-            style={{
-              color: `#${postData.color}`,
-            }}
-            className="w-full text-center font-semibold text-xl sm:text-2xl md:text-4xl first-letter:capitalize tracking-wider leading-snug"
-          >
-            {postData.title}
-          </h3>
-        </div>
         {/* post body */}
-        <div
+        <pre
+          className="text-xl px-1 py-2 max-w-full whitespace-pre-wrap"
           style={{
             color: `#${postData.color}`,
           }}
-          dangerouslySetInnerHTML={{ __html: postData.body }}
-        />
+        >
+          {getTitle(postData.title) && <br />}
+          {getTitle(postData.title) ? convert(postData.body) : postData.body}
+        </pre>
         {/* hash tag lists */}
         <div className="flex justify-start items-center my-4 rounded-full gap-2 flex-wrap">
           {postData.hashtags.map((hashtag, idx) => {
@@ -268,15 +266,41 @@ const Post = (post: PostInterface) => {
           })}
         </div>
         {/* comment section */}
-        <div className="flex flex-col my-5 sticky top-40 max-h-[80vh]">
-          <div className="mb-2 flex gap-4 justify-start items-center px-5 py-2 rounded-full bg-slate-700/20 text-gray-300">
+        <div className="flex flex-col my-5 sticky top-40 max-h-[80vh] gap-6">
+          {/* comment input area */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              mutate();
+            }}
+            id="comment-input-area"
+            className="mt-2 flex gap-1 justify-start items-center px-5 py-2 rounded-md bg-slate-700/20"
+          >
+            <input
+              type="text"
+              required={true}
+              maxLength={400}
+              className="flex-1 bg-transparent focus:border-none ring-0 focus:ring-0 focus:outline-none"
+              placeholder="What's your thought ?"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="flex sm:flex-none justify-center items-center gap-3 cursor-pointer hover:bg-slate-600/20 px-2 md:px-4 py-2 rounded-full"
+            >
+              <PaperAirplaneIcon className="w-5 h-5 -rotate-45" />
+              <p className="hidden md:block">Send</p>
+            </button>
+          </form>
+          <div className="flex gap-4 justify-start items-center px-5 py-2 rounded-md text-gray-300">
             <h3 id="comments">Comments</h3>
             {isSuccess && data.comments.length > 0 && (
               <span className="text-xs px-3 py-1 rounded-full text-green-500 bg-green-500/20">{`${data.comments.length} +`}</span>
             )}
           </div>
           {/* list of comments */}
-          <div className="flex flex-col gap-4 px-2 sm:px-4 md:px-8 py-5 overflow-y-scroll">
+          <div className="flex flex-col gap-4 overflow-y-scroll">
             {/* if no comment is found */}
             {isSuccess && data.comments.length <= 0 && (
               <p className="text-center text-gray-600">No comment</p>
@@ -297,32 +321,6 @@ const Post = (post: PostInterface) => {
                 );
               })}
           </div>
-          {/* comment input area */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              mutate();
-            }}
-            id="comment-input-area"
-            className="mt-2 flex flex-wrap gap-1 justify-start items-center px-5 py-2 rounded-md bg-slate-700/20"
-          >
-            <input
-              type="text"
-              required={true}
-              maxLength={400}
-              className="flex-1 bg-transparent focus:border-none px-4 ring-0 focus:ring-0 focus:outline-none"
-              placeholder="What's your thought ?"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="flex flex-1 sm:flex-none justify-center items-center gap-3 cursor-pointer hover:bg-slate-600/20 px-4 py-2 rounded-full"
-            >
-              <PaperAirplaneIcon className="w-5 h-5 -rotate-45" />
-              <p>Send</p>
-            </button>
-          </form>
         </div>
       </section>
     </>

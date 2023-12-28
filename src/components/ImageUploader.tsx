@@ -26,7 +26,7 @@ const ImageUploader = (props: IImageUploader) => {
         id="image-upload-input"
       />
       <label htmlFor="image-upload-input">
-        <div className="flex justify-center items-center gap-1 cursor-pointer">
+        <div className="flex justify-center items-center gap-1 opacity-50 cursor-not-allowed">
           <PhotoIcon className="w-4 h-4 text-blue-500" />
           <p>Image</p>
         </div>

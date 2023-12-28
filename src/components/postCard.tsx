@@ -1,66 +1,44 @@
-import { PostInterface } from "@/Interface/PostInterface";
 import {
+  EllipsisHorizontalIcon,
   HandThumbDownIcon,
-  ChatBubbleOvalLeftEllipsisIcon,
-  ShareIcon,
   HeartIcon,
+  ChatBubbleOvalLeftEllipsisIcon,
 } from "@heroicons/react/24/outline";
 import {
-  HandThumbDownIcon as HandThumbDownIconSolid,
   HeartIcon as HeartIconSolid,
+  HandThumbDownIcon as HandThumbDownIconSolid,
 } from "@heroicons/react/24/solid";
-import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/solid";
-import axios from "axios";
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import Tippy from "@tippyjs/react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  dislikePost,
-  likePost,
-  selectPostItems,
-} from "@/store/slices/postSlice";
-import { htmlToText } from "html-to-text";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { dislikePost, likePost } from "@/store/slices/postSlice";
+import axios from "axios";
+import Image from "next/image";
+import { PostCardInterface } from "@/Interface/PostInterface";
+import { convert } from "html-to-text";
 
-const PostCard = ({
-  id,
-  date,
-  time,
-  title,
-  body,
-  likes,
-  dislikes,
-  color,
-  totalComments,
-}: PostInterface) => {
-  const postItems = useSelector(selectPostItems);
+const PostCard = (props: PostCardInterface) => {
   const dispatch = useDispatch();
   const commentArea = "comment-input-area";
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const [postLikes, setPostLikes] = useState<number>(likes);
-  const [postDislikes, setPostDislikes] = useState<number>(dislikes);
-  const [isCopied, setIsCopied] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
 
-  const handleCopyUrl = () => {
-    const currentUrl = window.location.href;
-    navigator.clipboard.writeText(`${currentUrl}/${id}`);
-    setIsCopied(true);
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 2000);
+  // check if it is html first
+  const isHTML = (str: string) => {
+    // Regular expression to check if the string contains HTML tags
+    let htmlRegex = /<[a-z][\s\S]*>/i;
+    return htmlRegex.test(str);
   };
 
   // handle like button
   const handleLikeButton = async () => {
     !isLiked &&
       (await axios
-        .get(`${baseUrl}/api/post/${id}/like`)
+        .get(`${baseUrl}/api/v1/post/${props.id}/like`)
         .then((res) => {
-          setPostLikes(res.data.likes as number);
-          dispatch(likePost(id));
+          dispatch(likePost(props.id));
+          setIsLiked(true);
         })
         .catch((error) => {
           if (error.response && error.response.status === 429) {
@@ -77,10 +55,10 @@ const PostCard = ({
   const handleDislikeButton = async () => {
     !isDisliked &&
       (await axios
-        .get(`${baseUrl}/api/post/${id}/dislike`)
+        .get(`${baseUrl}/api/v1/post/${props.id}/dislike`)
         .then((res) => {
-          setPostDislikes(res.data.dislikes);
-          dispatch(dislikePost(id));
+          dispatch(dislikePost(props.id));
+          setIsDisliked(true);
         })
         .catch((error) => {
           if (error.response && error.response.status === 429) {
@@ -93,118 +71,113 @@ const PostCard = ({
         }));
   };
 
-  useEffect(() => {
-    const post = postItems.find((p: any) => p.id === id);
-    if (post) {
-      setIsLiked(post.like);
-      setIsDisliked(post.dislike);
-    }
-  }, [id, postItems]);
-
   return (
-    <motion.div
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      whileHover={{ scale: 1.2, transition: { ease: "easeInOut" } }}
-      whileTap={{ scale: 1.1, transition: { ease: "easeInOut" } }}
-      style={{
-        borderColor: `#${color}`,
-      }}
-      className={`bg-gray-800 flex flex-col p-4 border rounded-md cursor-pointer`}
-    >
-      <Link href={`/post/${id}`} className="flex-1">
-        {/* title */}
-        <div className="flex flex-col gap-1">
-          {/* note title */}
-          <h3
-            style={{
-              color: `#${color}`,
-            }}
-            className="font-semibold text-ellipsis whitespace-nowrap overflow-hidden"
-          >
-            {title}
-          </h3>
-          <div className="flex justify-center items-center gap-2 w-fit">
-            {/* actual data */}
-            <p className="text-xs text-gray-400">
-              {date} - {time}
-            </p>
-            <GlobeEuropeAfricaIcon className="w-3 h-3 text-gray-200" />
+    <div className="flex justify-center">
+      <div className="bg-slate-800 bg-opacity-40 p-4 w-full">
+        <div
+          style={{
+            borderColor: `#${props.color}`,
+          }}
+          className="flex justify-between items-center pb-4 mb-4 border-b"
+        >
+          <div className="flex items-center gap-2">
+            {/* user image */}
+            <div className="w-8 h-8 rounded-full overflow-hidden">
+              <Image
+                src={`https://robohash.org/${props.id}?size=32x32`}
+                loading="lazy"
+                alt="profile-pic"
+                width={32}
+                height={32}
+                className="h-full w-full object-cover"
+              />
+            </div>
+            {/* username and date */}
+            <div className="flex flex-col">
+              <span className="font-bold text-slate-300">Stranger</span>
+              <span className="font-light text-slate-300 text-xs tracking-wider">
+                {props.date} - {props.time}
+              </span>
+            </div>
+            {/* icon */}
+          </div>
+          <div className="w-10 h-10 rounded-full hover:bg-gray-600 flex justify-center items-center transform transition-colors duration-500 cursor-pointer">
+            <EllipsisHorizontalIcon className="w-8 h-8" />
           </div>
         </div>
-        {/* body */}
-        <section
-          style={{
-            color: `#${color}`,
-          }}
-          className="my-2 bg-slate-900/20 py-2 px-3 rounded-lg multi-line-truncation max-h-[130px]"
-        >
-          <div dangerouslySetInnerHTML={{ __html: body }} />
-        </section>
-      </Link>
-      {/* like, dislike, comment */}
-      <div className="flex justify-between mt-2 px-4 sm:px-3 md:px-2">
-        {/* heart icon */}
-        <div
-          onClick={handleLikeButton}
-          className="group flex gap-1 text-red-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
-        >
-          <Tippy content={<span>Like</span>}>
-            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-red-500/10 transform transition-all ease-in-out duration-500">
+        {/* post body */}
+        <Link href={`/post/${props.id}`}>
+          <section className="max-w-full flex flex-wrap">
+            <div className="w-fit">
+              <pre className="text-sm max-w-fit whitespace-pre-line overflow-hidden">
+                <span className="multi-line-truncation">
+                  {isHTML(props.body) ? convert(props.body) : props.body}
+                </span>
+              </pre>
+            </div>
+            {/* images if they have*/}
+            {props.image && (
+              <div className="w-full pt-4 relative">
+                <Image
+                  src="https://images.unsplash.com/photo-1684767555842-ffeea8bd1463?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80"
+                  alt="post image"
+                  width={500}
+                  height={500}
+                  className="object-cover max-h-[300px] w-full rounded-md"
+                />
+              </div>
+            )}
+          </section>
+        </Link>
+        {/* link | message */}
+        <div className="flex justify-between gap-2 mt-4">
+          <span className="text-xs text-slate-300">- views</span>
+          <span className="text-xs text-slate-300">
+            {props.totalComments} Comments
+          </span>
+        </div>
+        <div className="flex justify-between gap-2 mt-4">
+          {/* heart icon */}
+          <div
+            onClick={handleLikeButton}
+            className="rounded-full group flex gap-1 pr-3 pl-1 text-red-500 hover:bg-red-500/10 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+          >
+            <div className="flex justify-center items-center px-1">
               {isLiked ? (
                 <HeartIconSolid className="w-4 h-4" />
               ) : (
                 <HeartIcon className="w-4 h-4" />
               )}
             </div>
-          </Tippy>
-          <p className="font-mono text-xs font-light">{postLikes}</p>
-        </div>
-        {/* thumbs down icon */}
-        <div
-          onClick={handleDislikeButton}
-          className="group flex gap-1 text-orange-500  transform transition-all ease-in-out duration-500 items-center cursor-pointer"
-        >
-          <Tippy content={<span>Dislike</span>}>
-            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-orange-500/10 transform transition-all ease-in-out duration-500">
+            <p className="font-mono">Like</p>
+          </div>
+          {/* thumbs down icon */}
+          <div
+            onClick={handleDislikeButton}
+            className="rounded-full flex gap-1 pr-3 pl-1 text-orange-500 hover:bg-orange-500/10 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+          >
+            <div className="flex justify-center items-center p-1">
               {isDisliked ? (
                 <HandThumbDownIconSolid className="w-4 h-4" />
               ) : (
                 <HandThumbDownIcon className="w-4 h-4" />
               )}
             </div>
-          </Tippy>
-          <p className="font-mono text-xs font-light">{postDislikes}</p>
-        </div>
-        {/* chat icon */}
-        <Link
-          href={`/post/${id}#${commentArea}`}
-          className="group flex gap-1 text-blue-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
-        >
-          <Tippy content={<span>Comments</span>}>
-            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-blue-500/10 transform transition-all ease-in-out duration-500">
+            <p className="font-mono">Dislike</p>
+          </div>
+          {/* chat icon */}
+          <Link
+            href={`/post/${props.id}#${commentArea}`}
+            className="rounded-full flex gap-1 pr-3 pl-1 text-blue-500 hover:bg-blue-500/10 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
+          >
+            <div className="flex justify-center items-center p-1 ">
               <ChatBubbleOvalLeftEllipsisIcon className="w-4 h-4" />
             </div>
-          </Tippy>
-          <p className="font-mono text-xs font-light">{totalComments}</p>
-        </Link>
-        {/* share icon */}
-        <div
-          onClick={handleCopyUrl}
-          className="group flex gap-1 text-green-500 transform transition-all ease-in-out duration-500 items-center cursor-pointer"
-        >
-          <Tippy
-            content={<span>{isCopied ? "Copied!" : "Share URL"}</span>}
-            trigger="click"
-            inertia={true}
-          >
-            <div className="flex justify-center items-center p-1 rounded-full group-hover:bg-green-500/10 transform transition-all ease-in-out duration-500">
-              <ShareIcon className="w-4 h-4" />
-            </div>
-          </Tippy>
+            <p className="font-mono">Comments</p>
+          </Link>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

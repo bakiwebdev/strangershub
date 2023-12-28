@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { ArrowSmallUpIcon } from "@heroicons/react/24/outline";
+
 import Seo from "@/components/SEO";
 import PostCardSkeleton from "@/components/postCardSkeleton";
 import axios from "axios";
@@ -35,10 +38,8 @@ const Post = () => {
   return (
     <>
       <Seo
-        templateTitle={"Share Your Thoughts"}
-        description={
-          "Join us today and let your voice be heard - without ever having to reveal your identity!"
-        }
+        templateTitle="Share Your Thoughts"
+        description="Join us today and let your voice be heard - without ever having to reveal your identity!"
       />
       <main className="container mx-auto grid grid-cols-4 h-screen max-w-6xl">
         <div className="">gird 1</div>
