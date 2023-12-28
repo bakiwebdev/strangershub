@@ -1,10 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrowSmallUpIcon } from "@heroicons/react/24/outline";
 
 import Seo from "@/components/SEO";
 import PostCardSkeleton from "@/components/postCardSkeleton";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import PostInputCard from "@/components/PostInputCard";
 import PostContainer from "@/components/PostContainer";
 
@@ -23,7 +22,7 @@ const Post = () => {
   useEffect(() => {
     !isModalOpen &&
       axios
-        .get(`${baseUrl}/api/post?page=${1}&limit=${limit}`)
+        .get(`${baseUrl}/api/v1/post?page=${1}&limit=${limit}`)
         .then((res) => {
           setPageIndex(2);
           setHasMorePost(true);

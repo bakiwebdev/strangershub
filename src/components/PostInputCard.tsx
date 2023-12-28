@@ -24,7 +24,7 @@ const PostInputCard = () => {
         await uploadImage(file);
       }
       axios
-        .post(`${baseUrl}/api/post`, {
+        .post(`${baseUrl}/api/v1/post`, {
           title: "static title",
           body: text,
           hashtags: "",

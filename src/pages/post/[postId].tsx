@@ -37,7 +37,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   // Fetch data from external API
   const post = await axios
-    .get(`${baseUrl}/api/post/${postId}`)
+    .get(`${baseUrl}/api/v1/post/${postId}`)
     .then((res) => {
       return res.data;
     });
@@ -89,7 +89,7 @@ const Post = (post: PostInterface) => {
 
   const { mutate, isLoading: isPostCommentLoading } = useMutation({
     mutationFn: () => {
-      return axios.post(`${baseUrl}/api/post/${postData.id}/comment`, {
+      return axios.post(`${baseUrl}/api/v1/post/${postData.id}/comment`, {
         comment,
       });
     },
@@ -103,7 +103,7 @@ const Post = (post: PostInterface) => {
   const handleLikeButton = async () => {
     !isLiked &&
       (await axios
-        .get(`${baseUrl}/api/post/${postData.id}/like`)
+        .get(`${baseUrl}/api/v1/post/${postData.id}/like`)
         .then((res) => {
           setPostData({ ...postData, likes: res.data.likes });
           dispatch(likePost(post.id));
@@ -124,7 +124,7 @@ const Post = (post: PostInterface) => {
   const handleDislikeButton = async () => {
     !isDisliked &&
       (await axios
-        .get(`${baseUrl}/api/post/${postData.id}/dislike`)
+        .get(`${baseUrl}/api/v1/post/${postData.id}/dislike`)
         .then((res) => {
           setPostData({ ...postData, dislikes: res.data.dislikes });
           queryClient.invalidateQueries({ queryKey: ["getPosts"] });
@@ -146,7 +146,7 @@ const Post = (post: PostInterface) => {
     queryKey: ["getComments"],
     queryFn: () => {
       return axios
-        .get(`${baseUrl}/api/post/${postData.id}/comment`)
+        .get(`${baseUrl}/api/v1/post/${postData.id}/comment`)
         .then((res) => {
           return res.data;
         });

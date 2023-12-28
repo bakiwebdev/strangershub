@@ -19,7 +19,7 @@ const PostContainer = () => {
   const fetchLatestPost = () => {
     if (pageIndex === 1) {
       axios
-        .get(`${baseUrl}/api/post?page=${pageIndex}&limit=${limit}`)
+        .get(`${baseUrl}/api/v1/post?page=${pageIndex}&limit=${limit}`)
         .then((res) => {
           setIsLoading(false);
           setPosts(res.data.posts);
@@ -33,7 +33,7 @@ const PostContainer = () => {
     } else {
       console.log("excute fetch ", pageIndex, limit);
       axios
-        .get(`${baseUrl}/api/post?page=${pageIndex}&limit=${limit}`)
+        .get(`${baseUrl}/api/v1/post?page=${pageIndex}&limit=${limit}`)
         .then((res) => {
           if (res.data.posts.length === 0) {
             setHasMorePost(false);
@@ -51,7 +51,7 @@ const PostContainer = () => {
   useEffect(() => {
     !isModalOpen &&
       axios
-        .get(`${baseUrl}/api/post?page=${1}&limit=${limit}`)
+        .get(`${baseUrl}/api/v1/post?page=${1}&limit=${limit}`)
         .then((res) => {
           setPageIndex(2);
           setHasMorePost(true);

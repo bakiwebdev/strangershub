@@ -22,7 +22,7 @@ const InputModal = ({ isOpen, onRequestClose }: InputModalProps) => {
   // mutate request
   const { mutate, isLoading: isPostLoading } = useMutation({
     mutationFn: () => {
-      return axios.post(`${baseUrl}/api/post`, post);
+      return axios.post(`${baseUrl}/api/v1/post`, post);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getPosts"] });

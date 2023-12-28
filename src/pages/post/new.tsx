@@ -19,7 +19,7 @@ const NewPost = () => {
   // mutate request
   const { mutate, isLoading: isPostLoading } = useMutation({
     mutationFn: () => {
-      return axios.post(`${baseUrl}/api/post`, post);
+      return axios.post(`${baseUrl}/api/v1/post`, post);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["getPosts"] });
